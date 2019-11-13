@@ -1,0 +1,21 @@
+-- Found ament_cmake: 0.7.3 (/opt/ros/dashing/share/ament_cmake/cmake)
+-- Using PYTHON_EXECUTABLE: /usr/bin/python3
+-- Override CMake install command with custom implementation using symlinks instead of copying resources
+-- Found ament_lint_auto: 0.7.11 (/opt/ros/dashing/share/ament_lint_auto/cmake)
+-- Added test 'copyright' to check for copyright in CMake / C / C++ / Python code
+-- Added test 'cppcheck' to perform static code analysis on C / C++ code
+-- Configured cppcheck include dirs: 
+-- Added test 'cpplint' to check C / C++ code against the Google style
+-- Added test 'flake8' to check Python code syntax and style conventions
+-- Added test 'lint_cmake' to check CMake code style
+-- Added test 'pep257' to check Python code against some of the style conventions in PEP 257
+-- Added test 'uncrustify' to check C / C++ code style
+-- Added test 'xmllint' to check XML markup files
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/william/vacuumcleaner/build/vacuumcleaner
+[35m[1mScanning dependencies of target vacuumcleaner[0m
+[ 50%] [32mBuilding CXX object CMakeFiles/vacuumcleaner.dir/src/main.cpp.o[0m
+CMakeFiles/vacuumcleaner.dir/build.make:62: recipe for target 'CMakeFiles/vacuumcleaner.dir/src/main.cpp.o' failed
+CMakeFiles/Makefile2:67: recipe for target 'CMakeFiles/vacuumcleaner.dir/all' failed
+Makefile:140: recipe for target 'all' failed

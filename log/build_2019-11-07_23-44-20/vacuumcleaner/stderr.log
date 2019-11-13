@@ -1,0 +1,7 @@
+[01m[K/home/william/vacuumcleaner/src/main.cpp:1:10:[m[K [01;31m[Kfatal error: [m[Krclcpp/rclcpp.hpp: No such file or directory
+ #include [01;31m[K<rclcpp/rclcpp.hpp>[m[K
+          [01;31m[K^~~~~~~~~~~~~~~~~~~[m[K
+compilation terminated.
+make[2]: *** [CMakeFiles/vacuumcleaner.dir/src/main.cpp.o] Error 1
+make[1]: *** [CMakeFiles/vacuumcleaner.dir/all] Error 2
+make: *** [all] Error 2

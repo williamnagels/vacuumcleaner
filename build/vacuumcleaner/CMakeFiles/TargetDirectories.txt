@@ -1,0 +1,9 @@
+/home/william/vacuumcleaner/build/vacuumcleaner/CMakeFiles/install/strip.dir
+/home/william/vacuumcleaner/build/vacuumcleaner/CMakeFiles/install.dir
+/home/william/vacuumcleaner/build/vacuumcleaner/CMakeFiles/vacuumcleaner.dir
+/home/william/vacuumcleaner/build/vacuumcleaner/CMakeFiles/uninstall.dir
+/home/william/vacuumcleaner/build/vacuumcleaner/CMakeFiles/install/local.dir
+/home/william/vacuumcleaner/build/vacuumcleaner/CMakeFiles/test.dir
+/home/william/vacuumcleaner/build/vacuumcleaner/CMakeFiles/list_install_components.dir
+/home/william/vacuumcleaner/build/vacuumcleaner/CMakeFiles/edit_cache.dir
+/home/william/vacuumcleaner/build/vacuumcleaner/CMakeFiles/rebuild_cache.dir

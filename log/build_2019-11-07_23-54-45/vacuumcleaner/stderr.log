@@ -1,0 +1,38 @@
+Error parsing '/home/william/vacuumcleaner/package.xml':
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/catkin_pkg/package.py", line 588, in parse_package_string
+    root = dom.parseString(data)
+  File "/usr/lib/python3.6/xml/dom/minidom.py", line 1968, in parseString
+    return expatbuilder.parseString(string)
+  File "/usr/lib/python3.6/xml/dom/expatbuilder.py", line 925, in parseString
+    return builder.parseString(string)
+  File "/usr/lib/python3.6/xml/dom/expatbuilder.py", line 223, in parseString
+    parser.Parse(string, True)
+xml.parsers.expat.ExpatError: not well-formed (invalid token): line 14, column 17
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/opt/ros/dashing/share/ament_cmake_core/cmake/core/package_xml_2_cmake.py", line 143, in <module>
+    main()
+  File "/opt/ros/dashing/share/ament_cmake_core/cmake/core/package_xml_2_cmake.py", line 52, in main
+    raise e
+  File "/opt/ros/dashing/share/ament_cmake_core/cmake/core/package_xml_2_cmake.py", line 49, in main
+    args.package_xml.read(), filename=args.package_xml.name)
+  File "/usr/lib/python3/dist-packages/catkin_pkg/package.py", line 590, in parse_package_string
+    raise InvalidPackage('The manifest contains invalid XML:\n%s' % ex, filename)
+catkin_pkg.package.InvalidPackage: Error(s) in package '/home/william/vacuumcleaner/package.xml':
+The manifest contains invalid XML:
+not well-formed (invalid token): line 14, column 17
+CMake Error at /opt/ros/dashing/share/ament_cmake_core/cmake/core/ament_package_xml.cmake:94 (message):
+  execute_process(/usr/bin/python3
+  /opt/ros/dashing/share/ament_cmake_core/cmake/core/package_xml_2_cmake.py
+  /home/william/vacuumcleaner/package.xml
+  /home/william/vacuumcleaner/build/vacuumcleaner/ament_cmake_core/package.cmake)
+  returned error code 1
+Call Stack (most recent call first):
+  /opt/ros/dashing/share/ament_cmake_core/cmake/core/ament_package_xml.cmake:49 (_ament_package_xml)
+  /opt/ros/dashing/share/ament_lint_auto/cmake/ament_lint_auto_find_test_dependencies.cmake:31 (ament_package_xml)
+  CMakeLists.txt:32 (ament_lint_auto_find_test_dependencies)
+
+

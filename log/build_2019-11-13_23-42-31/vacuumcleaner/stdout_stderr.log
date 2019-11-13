@@ -1,0 +1,24 @@
+-- Found ament_cmake: 0.7.3 (/opt/ros/dashing/share/ament_cmake/cmake)
+-- Using PYTHON_EXECUTABLE: /usr/bin/python3
+-- Override CMake install command with custom implementation using symlinks instead of copying resources
+-- Found ament_lint_auto: 0.7.11 (/opt/ros/dashing/share/ament_lint_auto/cmake)
+-- Found rosidl_adapter: 0.7.7 (/opt/ros/dashing/share/rosidl_adapter/cmake)
+-- Found rmw_implementation_cmake: 0.7.2 (/opt/ros/dashing/share/rmw_implementation_cmake/cmake)
+-- Added test 'copyright' to check for copyright in CMake / C / C++ / Python code
+-- Added test 'cppcheck' to perform static code analysis on C / C++ code
+-- Configured cppcheck include dirs: 
+-- Added test 'cpplint' to check C / C++ code against the Google style
+-- Added test 'flake8' to check Python code syntax and style conventions
+-- Added test 'lint_cmake' to check CMake code style
+-- Added test 'pep257' to check Python code against some of the style conventions in PEP 257
+-- Added test 'uncrustify' to check C / C++ code style
+-- Added test 'xmllint' to check XML markup files
+CMake Error at /opt/ros/dashing/share/ament_cmake_core/cmake/symlink_install/install.cmake:43 (_install):
+  _install called with unknown mode FILE
+Call Stack (most recent call first):
+  CMakeLists.txt:43 (install)
+
+
+-- Configuring incomplete, errors occurred!
+See also "/home/william/vacuumcleaner/build/vacuumcleaner/CMakeFiles/CMakeOutput.log".
+See also "/home/william/vacuumcleaner/build/vacuumcleaner/CMakeFiles/CMakeError.log".

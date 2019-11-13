@@ -1,0 +1,11 @@
+/usr/local/share/ament_index/resource_index/package_run_dependencies/vacuumcleaner
+/usr/local/share/ament_index/resource_index/parent_prefix_path/vacuumcleaner
+/usr/local/share/vacuumcleaner/environment/ament_prefix_path.sh
+/usr/local/share/vacuumcleaner/environment/path.sh
+/usr/local/share/vacuumcleaner/local_setup.bash
+/usr/local/share/vacuumcleaner/local_setup.sh
+/usr/local/share/vacuumcleaner/local_setup.zsh
+/usr/local/share/ament_index/resource_index/packages/vacuumcleaner
+/usr/local/share/vacuumcleaner/cmake/vacuumcleanerConfig.cmake
+/usr/local/share/vacuumcleaner/cmake/vacuumcleanerConfig-version.cmake
+/usr/local/share/vacuumcleaner/package.xml

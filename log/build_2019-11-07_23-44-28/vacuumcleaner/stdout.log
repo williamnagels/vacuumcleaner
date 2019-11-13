@@ -1,0 +1,4 @@
+[ 50%] [32mBuilding CXX object CMakeFiles/vacuumcleaner.dir/src/main.cpp.o[0m
+CMakeFiles/vacuumcleaner.dir/build.make:62: recipe for target 'CMakeFiles/vacuumcleaner.dir/src/main.cpp.o' failed
+CMakeFiles/Makefile2:67: recipe for target 'CMakeFiles/vacuumcleaner.dir/all' failed
+Makefile:140: recipe for target 'all' failed

@@ -1,0 +1,21 @@
+[100%] Built target vacuumcleaner
+[100%] Built target vacuumcleaner
+[36mInstall the project...[0m
+-- Install configuration: ""
+-- Execute custom install script
+-- Up-to-date symlink: /home/william/vacuumcleaner/install/vacuumcleaner/share/ament_index/resource_index/package_run_dependencies/vacuumcleaner
+-- Up-to-date symlink: /home/william/vacuumcleaner/install/vacuumcleaner/share/ament_index/resource_index/parent_prefix_path/vacuumcleaner
+-- Up-to-date symlink: /home/william/vacuumcleaner/install/vacuumcleaner/share/vacuumcleaner/environment/ament_prefix_path.sh
+-- Up-to-date symlink: /home/william/vacuumcleaner/install/vacuumcleaner/share/vacuumcleaner/environment/path.sh
+-- Up-to-date symlink: /home/william/vacuumcleaner/install/vacuumcleaner/share/vacuumcleaner/local_setup.bash
+-- Up-to-date symlink: /home/william/vacuumcleaner/install/vacuumcleaner/share/vacuumcleaner/local_setup.sh
+-- Up-to-date symlink: /home/william/vacuumcleaner/install/vacuumcleaner/share/vacuumcleaner/local_setup.zsh
+-- Up-to-date symlink: /home/william/vacuumcleaner/install/vacuumcleaner/share/ament_index/resource_index/packages/vacuumcleaner
+-- Up-to-date symlink: /home/william/vacuumcleaner/install/vacuumcleaner/share/vacuumcleaner/cmake/vacuumcleanerConfig.cmake
+-- Up-to-date symlink: /home/william/vacuumcleaner/install/vacuumcleaner/share/vacuumcleaner/cmake/vacuumcleanerConfig-version.cmake
+-- Up-to-date symlink: /home/william/vacuumcleaner/install/vacuumcleaner/share/vacuumcleaner/package.xml
+-- Up-to-date symlink: /home/william/vacuumcleaner/install/vacuumcleaner/lib/vacuumcleaner
+-- Up-to-date symlink: /home/william/vacuumcleaner/install/vacuumcleaner/share/vacuumcleaner/config.rviz
+-- Up-to-date symlink: /home/william/vacuumcleaner/install/vacuumcleaner/share/vacuumcleaner/launch/__pycache__/rviz_launch.cpython-36.pyc
+-- Up-to-date symlink: /home/william/vacuumcleaner/install/vacuumcleaner/share/vacuumcleaner/launch/rviz_launch.py
+-- Up-to-date symlink: /home/william/vacuumcleaner/install/vacuumcleaner/share/vacuumcleaner/urdf/model

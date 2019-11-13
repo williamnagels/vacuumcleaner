@@ -1,0 +1,4 @@
+Invoking command in '/home/william/vacuumcleaner/build/vacuumcleaner': CMAKE_PREFIX_PATH=/opt/ros/dashing /usr/bin/cmake /home/william/vacuumcleaner -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/william/vacuumcleaner/install/vacuumcleaner
+Invoked command in '/home/william/vacuumcleaner/build/vacuumcleaner' returned '0': CMAKE_PREFIX_PATH=/opt/ros/dashing /usr/bin/cmake /home/william/vacuumcleaner -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/william/vacuumcleaner/install/vacuumcleaner
+Invoking command in '/home/william/vacuumcleaner/build/vacuumcleaner': CMAKE_PREFIX_PATH=/opt/ros/dashing /usr/bin/cmake --build /home/william/vacuumcleaner/build/vacuumcleaner -- -j8 -l8
+Invoked command in '/home/william/vacuumcleaner/build/vacuumcleaner' returned '2': CMAKE_PREFIX_PATH=/opt/ros/dashing /usr/bin/cmake --build /home/william/vacuumcleaner/build/vacuumcleaner -- -j8 -l8
