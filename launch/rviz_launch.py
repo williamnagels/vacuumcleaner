@@ -11,9 +11,11 @@ def generate_launch_description():
 
     bringup_dir = get_package_share_directory('vacuumcleaner')
     launch_dir = os.path.join(bringup_dir, 'launch')
-    urdf_file = os.path.join(bringup_dir, 'urdf', 'model')
+    urdf_dir = os.path.join(bringup_dir, 'urdf')
+    model_file = os.path.join(urdf_dir, 'vacuumcleaner','model.urdf')
     rviz_config_file = os.path.join(bringup_dir, "config.rviz")
     print(rviz_config_file)
+    print(model_file)
     use_sim_time = 'true'
     return LaunchDescription([
         Node(
@@ -28,12 +30,12 @@ def generate_launch_description():
             node_name='robot_state_publisher',
             output='screen',
             parameters=[{'use_sim_time': use_sim_time}],
-            arguments=[urdf_file]),
-        Node(
-            package='joint_state_publisher',
-            node_executable='joint_state_publisher',
-            node_name='joint_state_publisher',
-            output='screen',
-            parameters=[{'dependent_joints': '[]', 'use_gui': 'true'}],
-            arguments=[urdf_file])
+            arguments=[model_file]),
+#       Node(
+#            package='joint_state_publisher',
+#            node_executable='joint_state_publisher',
+#            node_name='joint_state_publisher',
+#            output='screen',
+#            parameters=[{'dependent_joints': '[]', 'use_gui': 'true'}],
+#            arguments=[model_file])
    ])
