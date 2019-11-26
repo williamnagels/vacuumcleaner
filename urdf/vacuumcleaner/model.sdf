@@ -1,7 +1,7 @@
 <?xml version='1.0'?>
 <sdf version='1.4'>
 	<model name="my_robot">
-	        <link name='chassis'>
+	        <link name='base_link'>
                 	<pose>0 0 .1 0 0 0</pose>
 
 			<collision name='collision'>
@@ -145,7 +145,7 @@
    <joint type="fixed" name="lidar_joint">
         <pose>0 0 0.15 0 0 0</pose>
         <child>base_scan</child>
-        <parent>chassis</parent>
+        <parent>base_link</parent>
         <axis>
           <xyz>0 0 1</xyz>
         </axis>
@@ -153,24 +153,22 @@
 
 
       <joint type="revolute" name="wheel_left_joint">
-        <pose>0 0 -0.03 0 0 0</pose>
         <child>left_wheel</child>
-        <parent>chassis</parent>
+        <parent>base_link</parent>
         <axis>
           <xyz>0 1 0</xyz>
         </axis>
       </joint>
 
       <joint type="revolute" name="wheel_right_joint">
-        <pose>0 0 0.03 0 0 0</pose>
         <child>right_wheel</child>
-        <parent>chassis</parent>
+        <parent>base_link</parent>
         <axis>
           <xyz>0 1 0</xyz>
         </axis>
 </joint>
 
-    <plugin name="turtlebot3_diff_drive" filename="libgazebo_ros_diff_drive.so">
+   <plugin name="turtlebot3_diff_drive" filename="libgazebo_ros_diff_drive.so">
 
       <ros>
         <!-- <namespace>/tb3</namespace> -->
@@ -199,7 +197,7 @@
 
       <odometry_topic>odom</odometry_topic>
       <odometry_frame>odom</odometry_frame>
-      <robot_base_frame>base_footprint</robot_base_frame>
+      <robot_base_frame>base_link</robot_base_frame>
 
     </plugin>
     <plugin name="turtlebot3_joint_state" filename="libgazebo_ros_joint_state_publisher.so">
@@ -211,6 +209,5 @@
       <joint_name>wheel_left_joint</joint_name>
       <joint_name>wheel_right_joint</joint_name>
     </plugin>
-
  </model>
 </sdf>
