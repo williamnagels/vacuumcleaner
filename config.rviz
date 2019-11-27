@@ -6,13 +6,12 @@ Panels:
       Expanded:
         - /Global Options1
         - /Status1
-        - /TF1
+        - /TF1/Frames1
+        - /TF1/Tree1
         - /RobotModel1
-        - /RobotModel1/Status1
-        - /LaserScan1
-        - /Map1
-        - /Map1/Status1
-      Splitter Ratio: 0.7764471173286438
+        - /LaserScan1/Status1
+        - /Map1/Orientation1
+      Splitter Ratio: 0.7385229468345642
     Tree Height: 661
   - Class: rviz_common/Selection
     Name: Selection
@@ -54,14 +53,23 @@ Visualization Manager:
       Enabled: true
       Frame Timeout: 15
       Frames:
-        All Enabled: true
+        All Enabled: false
+        base_footprint:
+          Value: true
+        base_link:
+          Value: true
+        base_scan:
+          Value: true
       Marker Scale: 1
       Name: TF
       Show Arrows: true
       Show Axes: true
       Show Names: false
       Tree:
-        {}
+        base_footprint:
+          base_link:
+            base_scan:
+              {}
       Update Interval: 0
       Value: true
     - Alpha: 1
@@ -87,16 +95,6 @@ Visualization Manager:
           Show Trail: false
           Value: true
         base_scan:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        link_left_wheel:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        link_right_wheel:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -140,7 +138,7 @@ Visualization Manager:
     - Alpha: 0.699999988079071
       Class: rviz_default_plugins/Map
       Color Scheme: map
-      Draw Behind: false
+      Draw Behind: true
       Enabled: true
       Name: Map
       Topic: /map
@@ -150,7 +148,7 @@ Visualization Manager:
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
-    Fixed Frame: base_link
+    Fixed Frame: base_footprint
     Frame Rate: 30
   Name: root
   Tools:
@@ -173,25 +171,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 3.5154614448547363
+      Distance: 1.1472753286361694
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0.0015149221289902925
-        Y: 0.007291817106306553
-        Z: -2.3283064365386963e-10
+        X: -0.22773192822933197
+        Y: -0.08478368818759918
+        Z: 0.09260372072458267
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.6697973608970642
+      Pitch: 0.2747975289821625
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 3.0267527103424072
+      Yaw: 3.1930923461914062
     Saved: ~
 Window Geometry:
   Displays:
