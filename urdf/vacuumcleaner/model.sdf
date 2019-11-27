@@ -1,6 +1,7 @@
 <?xml version='1.0'?>
 <sdf version='1.4'>
 	<model name="my_robot">
+		<link name="base_footprint"/>
 	        <link name='base_link'>
                 	<pose>0 0 .1 0 0 0</pose>
 
@@ -48,6 +49,11 @@
             </geometry>
           </visual>
          </link>
+    <joint name="base_joint" type="fixed">
+      <parent>base_footprint</parent>
+      <child>base_link</child>
+      <pose>0.0 0.0 0.010 0 0 0</pose>
+    </joint>
 
       <link name="left_wheel">
         <pose>0.1 0.13 0.1 0 1.5707 1.5707</pose>
@@ -89,7 +95,7 @@
       </link>
     <link name="base_scan">    
       <pose>-0.15 0 0.15 0 0 0</pose>
-      <collision name="lidar_collision">
+      <collision name="lidar_collision">     
         <geometry>
           <sphere>
             <radius>.05</radius>
@@ -106,8 +112,8 @@
    <sensor name="hls_lfcd_lds" type="ray">
         <always_on>true</always_on>
         <visualize>true</visualize>
-        <pose>0 0 0.06 0 0 0</pose>
         <update_rate>5</update_rate>
+	<pose>0 0 0.06 0 0 0</pose>
         <ray>
           <scan>
             <horizontal>
@@ -142,19 +148,18 @@
 
 
    </link>
+
+
    <joint type="fixed" name="lidar_joint">
-        <pose>0 0 0.15 0 0 0</pose>
-        <child>base_scan</child>
-        <parent>base_link</parent>
-        <axis>
-          <xyz>0 0 1</xyz>
-        </axis>
-    </joint>
+     <pose>0 0 0.15 0 0 0</pose>
+     <parent>base_link</parent>
+     <child>base_scan</child>
+   </joint>
 
 
       <joint type="revolute" name="wheel_left_joint">
-        <child>left_wheel</child>
         <parent>base_link</parent>
+        <child>left_wheel</child>
         <axis>
           <xyz>0 1 0</xyz>
         </axis>

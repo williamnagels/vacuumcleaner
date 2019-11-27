@@ -21,4 +21,5 @@
 /home/william/vacuumcleaner/install/vacuumcleaner/share/vacuumcleaner/urdf/vacuumcleaner/model.config
 /home/william/vacuumcleaner/install/vacuumcleaner/share/vacuumcleaner/urdf/vacuumcleaner/model.sdf
 /home/william/vacuumcleaner/install/vacuumcleaner/share/vacuumcleaner/urdf/vacuumcleaner/model.urdf
+/home/william/vacuumcleaner/install/vacuumcleaner/share/vacuumcleaner/urdf/vacuumcleaner/model.urdf.back
 /home/william/vacuumcleaner/install/vacuumcleaner/share/vacuumcleaner/urdf/world
