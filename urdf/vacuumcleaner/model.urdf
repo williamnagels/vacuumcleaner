@@ -91,9 +91,8 @@
       <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
       <inertia ixx="0.00052666666" ixy="0" ixz="0" iyy="0.00052666666" iyz="0" izz="0.001"/>
     </inertial>
-       
 
-	  <collision name="link_left_wheel_collision">
+    <collision name="link_left_wheel_collision">
       <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
       <geometry>
         <cylinder length="0.04" radius="0.05"/>
@@ -115,6 +114,7 @@
     <axis rpy="0 0 0" xyz="0 1 0"/>
     <limit effort="10000" velocity="1000"/>
   </joint>
+
   <joint name="joint_left_wheel" type="continuous">
     <origin rpy="0 0 0" xyz="-0.1 -0.10 -0.02"/>
     <child link="link_left_wheel"/>
@@ -132,9 +132,53 @@
   <joint name="base_scan_joint" type="fixed">
    <child link="base_scan" />
    <parent link="base_link" />
-   <origin xyz="0 0 0.05"/>
+   <origin xyz="0 0 0.051"/> <!-- +0.051 iso 0.05 otherwise vision clips into top of robot-->
   </joint>
-  <gazebo reference="base_scan">
+ <gazebo>
+<plugin name="turtlebot3_diff_drive" filename="libgazebo_ros_diff_drive.so">
+
+      <ros>
+        <!-- <namespace>/tb3</namespace> -->
+      </ros>
+
+      <update_rate>30</update_rate>
+
+      <!-- wheels -->
+      <left_joint>joint_left_wheel</left_joint>
+      <right_joint>joint_right_wheel</right_joint>
+
+      <!-- kinematics -->
+      <wheel_separation>0.1</wheel_separation>
+      <wheel_diameter>0.05</wheel_diameter>
+
+      <!-- limits -->
+      <max_wheel_torque>20</max_wheel_torque>
+      <max_wheel_acceleration>1.0</max_wheel_acceleration>
+
+      <command_topic>cmd_vel</command_topic>
+      <!-- output -->
+      <publish_odom>true</publish_odom>
+      <publish_odom_tf>true</publish_odom_tf>
+      <publish_wheel_tf>false</publish_wheel_tf>
+
+      <odometry_topic>odom</odometry_topic>
+      <odometry_frame>odom</odometry_frame>
+      <robot_base_frame>base_footprint</robot_base_frame>
+
+    </plugin>
+
+    <plugin name="turtlebot3_joint_state" filename="libgazebo_ros_joint_state_publisher.so">
+      <ros>
+        <!-- <namespace>/tb3</namespace> -->
+        <argument>~/out:=joint_states</argument>
+      </ros>
+      <update_rate>30</update_rate>
+      <joint_name>joint_left_wheel</joint_name>
+      <joint_name>joint_right_wheel</joint_name>
+    </plugin>
+
+</gazebo>
+ <gazebo reference="base_scan">
     <sensor name="hls_lfcd_lds" type="ray">
         <always_on>true</always_on>
         <visualize>true</visualize>
@@ -160,6 +204,7 @@
           </noise>
         </ray>
         <plugin name="turtlebot3_laserscan" filename="libgazebo_ros_ray_sensor.so">
+		
           <ros>
             <!-- <namespace>/tb3</namespace> -->
             <argument>~/out:=scan</argument>
