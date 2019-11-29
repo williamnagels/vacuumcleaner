@@ -18,7 +18,7 @@
 
      </inertial>
     <collision name="caster_front_collision">
-      <origin rpy="0 0 0" xyz="0.15 0 -0.04"/>
+      <origin rpy="0 0 0" xyz="0.15 0 -0.041"/>
       <geometry>
         <sphere radius="0.02"/>
       </geometry>
@@ -34,7 +34,7 @@
       </surface>
     </collision>
     <visual name="caster_front_visual">
-      <origin rpy="0 0 0" xyz="0.15 0 -0.04"/>
+      <origin rpy="0 0 0" xyz="0.15 0 -0.041"/>
       <geometry>
         <sphere radius="0.02"/>
       </geometry>
@@ -73,13 +73,35 @@
     <collision name="link_right_wheel_collision">
       <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
       <geometry>
-        <cylinder length="0.02" radius="0.02"/>
+        <cylinder length="0.06" radius="0.02"/>
       </geometry>
+        <surface>
+          <!-- This friction pamareter don't contain reliable data!! -->
+          <friction>
+            <ode>
+              <mu>100000.0</mu>
+              <mu2>100000.0</mu2>
+              <fdir1>0 0 0</fdir1>
+              <slip1>0.0</slip1>
+              <slip2>0.0</slip2>
+            </ode>
+          </friction>
+          <contact>
+            <ode>
+              <soft_cfm>0</soft_cfm>
+              <soft_erp>0.2</soft_erp>
+              <kp>1e+5</kp>
+              <kd>1</kd>
+              <max_vel>0.01</max_vel>
+              <min_depth>0.001</min_depth>
+            </ode>
+          </contact>
+        </surface>
     </collision>
     <visual name="link_right_wheel_visual">
       <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
       <geometry>
-        <cylinder length="0.02" radius="0.02"/>
+        <cylinder length="0.06" radius="0.02"/>
       </geometry>
     </visual>
   </link>
@@ -95,20 +117,42 @@
     <collision name="link_left_wheel_collision">
       <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
       <geometry>
-        <cylinder length="0.02" radius="0.02"/>
+        <cylinder length="0.06" radius="0.02"/>
       </geometry>
+        <surface>
+          <!-- This friction pamareter don't contain reliable data!! -->
+          <friction>
+            <ode>
+              <mu>100000.0</mu>
+              <mu2>100000.0</mu2>
+              <fdir1>0 0 0</fdir1>
+              <slip1>0.0</slip1>
+              <slip2>0.0</slip2>
+            </ode>
+          </friction>
+          <contact>
+            <ode>
+              <soft_cfm>0</soft_cfm>
+              <soft_erp>0.2</soft_erp>
+              <kp>1e+5</kp>
+              <kd>1</kd>
+              <max_vel>0.01</max_vel>
+              <min_depth>0.001</min_depth>
+            </ode>
+          </contact>
+        </surface>
     </collision>
     <visual name="link_left_wheel_visual">
       <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
       <geometry>
-        <cylinder length="0.02" radius="0.02"/>
+        <cylinder length="0.06" radius="0.02"/>
       </geometry>
     </visual>
   </link>
 
 
   <joint name="joint_right_wheel" type="continuous">
-    <origin rpy="0 0 0" xyz="-0.1 0.10 -0.04"/>
+    <origin rpy="0 0 0" xyz="-0.1 0.10 -0.041"/>
     <child link="link_right_wheel"/>
     <parent link="base_link"/>
     <axis rpy="0 0 0" xyz="0 1 0"/>
@@ -116,7 +160,7 @@
   </joint>
 
   <joint name="joint_left_wheel" type="continuous">
-    <origin rpy="0 0 0" xyz="-0.1 -0.10 -0.04"/>
+    <origin rpy="0 0 0" xyz="-0.1 -0.10 -0.041"/>
     <child link="link_left_wheel"/>
     <parent link="base_link"/>
     <axis rpy="0 0 0" xyz="0 1 0"/>
@@ -136,7 +180,6 @@
   </joint>
  <gazebo>
 <plugin name="turtlebot3_diff_drive" filename="libgazebo_ros_diff_drive.so">
-
       <ros>
         <!-- <namespace>/tb3</namespace> -->
       </ros>
@@ -148,8 +191,8 @@
       <right_joint>joint_right_wheel</right_joint>
 
       <!-- kinematics -->
-      <wheel_separation>0.1</wheel_separation>
-      <wheel_diameter>0.05</wheel_diameter>
+      <wheel_separation>0.2</wheel_separation>
+      <wheel_diameter>0.04</wheel_diameter>
 
       <!-- limits -->
       <max_wheel_torque>20</max_wheel_torque>
