@@ -13,13 +13,14 @@
 /home/william/vacuumcleaner/install/vacuumcleaner/share/vacuumcleaner/config.rviz
 /home/william/vacuumcleaner/install/vacuumcleaner/share/vacuumcleaner/launch/__pycache__/rviz_launch.cpython-36.pyc
 /home/william/vacuumcleaner/install/vacuumcleaner/share/vacuumcleaner/launch/rviz_launch.py
+/home/william/vacuumcleaner/install/vacuumcleaner/share/vacuumcleaner/urdf/.world.swp
 /home/william/vacuumcleaner/install/vacuumcleaner/share/vacuumcleaner/urdf/turtlebot3_world/meshes/hexagon.dae
 /home/william/vacuumcleaner/install/vacuumcleaner/share/vacuumcleaner/urdf/turtlebot3_world/meshes/wall.dae
 /home/william/vacuumcleaner/install/vacuumcleaner/share/vacuumcleaner/urdf/turtlebot3_world/model-1_4.sdf
 /home/william/vacuumcleaner/install/vacuumcleaner/share/vacuumcleaner/urdf/turtlebot3_world/model.config
 /home/william/vacuumcleaner/install/vacuumcleaner/share/vacuumcleaner/urdf/turtlebot3_world/model.sdf
+/home/william/vacuumcleaner/install/vacuumcleaner/share/vacuumcleaner/urdf/vacuumcleaner/.model.urdf.swp
 /home/william/vacuumcleaner/install/vacuumcleaner/share/vacuumcleaner/urdf/vacuumcleaner/model.config
 /home/william/vacuumcleaner/install/vacuumcleaner/share/vacuumcleaner/urdf/vacuumcleaner/model.sdf
 /home/william/vacuumcleaner/install/vacuumcleaner/share/vacuumcleaner/urdf/vacuumcleaner/model.urdf
-/home/william/vacuumcleaner/install/vacuumcleaner/share/vacuumcleaner/urdf/vacuumcleaner/model.urdf.back
 /home/william/vacuumcleaner/install/vacuumcleaner/share/vacuumcleaner/urdf/world
