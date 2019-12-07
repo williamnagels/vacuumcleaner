@@ -1,2 +1,0 @@
-Invoking command in '/home/william/vacuumcleaner/build/vacuumcleaner': /usr/bin/cmake /home/william/vacuumcleaner -DCMAKE_INSTALL_PREFIX=/home/william/vacuumcleaner/install/vacuumcleaner
-Invoked command in '/home/william/vacuumcleaner/build/vacuumcleaner' returned '1': /usr/bin/cmake /home/william/vacuumcleaner -DCMAKE_INSTALL_PREFIX=/home/william/vacuumcleaner/install/vacuumcleaner

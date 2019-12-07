@@ -1,6 +1,0 @@
-CMake Error at /opt/ros/dashing/share/ament_cmake_core/cmake/symlink_install/install.cmake:43 (_install):
-  _install called with unknown mode FILE
-Call Stack (most recent call first):
-  CMakeLists.txt:43 (install)
-
-
