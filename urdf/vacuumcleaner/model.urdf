@@ -1,57 +1,54 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <robot name="vacuumcleaner">
-  <link name="base_footprint"/>	 
+  <link name="base_footprint" />
   <link name="base_link">
     <inertial>
-      <mass value="2"/>
-      <inertia ixx="0.02067" ixy="0" ixz="0" iyy="0.020267" iyz="0" izz="0.04"/>
-     </inertial>
-     <visual>
+      <mass value="2" />
+      <inertia ixx="0.02067" ixy="0" ixz="0" iyy="0.020267" iyz="0" izz="0.04" />
+    </inertial>
+    <visual>
       <geometry>
-        <cylinder length="0.04" radius="0.2"/>
+        <cylinder length="0.04" radius="0.2" />
       </geometry>
-   </visual>
+    </visual>
     <collision>
       <geometry>
-        <cylinder length="0.04" radius="0.2"/>
+        <cylinder length="0.04" radius="0.2" />
       </geometry>
-  </collision>
-   <collision name="caster_front_collision">
-      <origin rpy="0 0 0" xyz="0.15 0 -0.054"/>
-      <geometry>
-        <sphere radius="0.033"/>
-      </geometry>
-   </collision>
-    <visual name="caster_front_visual">
-	    <origin rpy="0 0 0" xyz="0.15 0 -0.054"/>
-	    <geometry>
-		    <sphere radius="0.033"/>
-	    </geometry>
-    </visual>
-    </link>
-
-    <link name="link_right_wheel">
-	    <inertial>
-		    <mass value="0.1"/>
-		    <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
-                   <inertia ixx="2.9925e-5" ixy="0" ixz="0" iyy="2.9925e-5" iyz="0" izz="5.4450e-5"/>
-	    </inertial>       
-
-	    <collision name="link_right_wheel_collision">
-		    <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
-		    <geometry>
-			    <cylinder length="0.018" radius="0.033"/>
-		    </geometry>
     </collision>
-    <visual name="link_right_wheel_visual">
-      <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+    <collision name="caster_front_collision">
+      <origin rpy="0 0 0" xyz="0.15 0 -0.054" />
       <geometry>
-        <cylinder length="0.018" radius="0.033"/>
+        <sphere radius="0.033" />
+      </geometry>
+    </collision>
+    <visual name="caster_front_visual">
+      <origin rpy="0 0 0" xyz="0.15 0 -0.054" />
+      <geometry>
+        <sphere radius="0.033" />
       </geometry>
     </visual>
   </link>
-
-   <gazebo reference="link_right_wheel">
+  <link name="link_right_wheel">
+    <inertial>
+      <mass value="0.1" />
+      <origin rpy="0 1.5707 1.5707" xyz="0 0 0" />
+      <inertia ixx="2.9925e-5" ixy="0" ixz="0" iyy="2.9925e-5" iyz="0" izz="5.4450e-5" />
+    </inertial>
+    <collision name="link_right_wheel_collision">
+      <origin rpy="0 1.5707 1.5707" xyz="0 0 0" />
+      <geometry>
+        <cylinder length="0.018" radius="0.033" />
+      </geometry>
+    </collision>
+    <visual name="link_right_wheel_visual">
+      <origin rpy="0 1.5707 1.5707" xyz="0 0 0" />
+      <geometry>
+        <cylinder length="0.018" radius="0.033" />
+      </geometry>
+    </visual>
+  </link>
+  <gazebo reference="link_right_wheel">
     <mu1>100000</mu1>
     <mu2>100000</mu2>
     <kp>1e5</kp>
@@ -59,162 +56,135 @@
   </gazebo>
   <link name="link_left_wheel">
     <inertial>
-      <mass value="0.1"/>
-      <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
-      <inertia ixx="2.9925e-5" ixy="0" ixz="0" iyy="2.9925e-5" iyz="0" izz="5.4450e-5"/>
+      <mass value="0.1" />
+      <origin rpy="0 1.5707 1.5707" xyz="0 0 0" />
+      <inertia ixx="2.9925e-5" ixy="0" ixz="0" iyy="2.9925e-5" iyz="0" izz="5.4450e-5" />
     </inertial>
-
     <collision name="link_left_wheel_collision">
-      <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+      <origin rpy="0 1.5707 1.5707" xyz="0 0 0" />
       <geometry>
-        <cylinder length="0.018" radius="0.033"/>
-</geometry>
-   </collision>
+        <cylinder length="0.018" radius="0.033" />
+      </geometry>
+    </collision>
     <visual name="link_left_wheel_visual">
-      <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+      <origin rpy="0 1.5707 1.5707" xyz="0 0 0" />
       <geometry>
-        <cylinder length="0.018" radius="0.033"/>
+        <cylinder length="0.018" radius="0.033" />
       </geometry>
     </visual>
   </link>
-
-
-   <gazebo reference="link_left_wheel">
+  <gazebo reference="link_left_wheel">
     <mu1>100000</mu1>
     <mu2>100000</mu2>
     <kp>1e5</kp>
     <material>Gazebo/Black</material>
   </gazebo>
   <joint name="joint_right_wheel" type="continuous">
-    <origin rpy="0 0 0" xyz="-0.02 -0.10 -0.054"/>
-    <child link="link_right_wheel"/>
-    <parent link="base_link"/>
-    <axis rpy="0 0 0" xyz="0 1 0"/>
-    <limit effort="10000" velocity="1000"/>
+    <origin rpy="0 0 0" xyz="-0.02 -0.10 -0.054" />
+    <child link="link_right_wheel" />
+    <parent link="base_link" />
+    <axis rpy="0 0 0" xyz="0 1 0" />
+    <limit effort="10000" velocity="1000" />
   </joint>
-
   <joint name="joint_left_wheel" type="continuous">
-    <origin rpy="0 0 0" xyz="-0.02 0.10 -0.054"/>
-    <child link="link_left_wheel"/>
-    <parent link="base_link"/>
-    <axis rpy="0 0 0" xyz="0 1 0"/>
-    <limit effort="10000" velocity="1000"/>
+    <origin rpy="0 0 0" xyz="-0.02 0.10 -0.054" />
+    <child link="link_left_wheel" />
+    <parent link="base_link" />
+    <axis rpy="0 0 0" xyz="0 1 0" />
+    <limit effort="10000" velocity="1000" />
   </joint>
-
-   <joint name="base_joint" type="fixed">
-    <parent link="base_footprint"/>
+  <joint name="base_joint" type="fixed">
+    <parent link="base_footprint" />
     <child link="base_link" />
-    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <origin xyz="0 0 0" rpy="0 0 0" />
   </joint>
-
- <gazebo>
-<plugin name="turtlebot3_diff_drive" filename="libgazebo_ros_diff_drive.so">
+  <gazebo>
+    <plugin name="differential_drive" filename="libgazebo_ros_diff_drive.so">
       <ros>
-        <!-- <namespace>/tb3</namespace> -->
       </ros>
-
       <update_rate>30</update_rate>
-
       <!-- wheels -->
       <left_joint>joint_left_wheel</left_joint>
       <right_joint>joint_right_wheel</right_joint>
-
       <!-- kinematics -->
       <wheel_separation>0.2</wheel_separation>
       <wheel_diameter>0.066</wheel_diameter>
-
       <!-- limits -->
       <max_wheel_torque>20</max_wheel_torque>
       <max_wheel_acceleration>1</max_wheel_acceleration>
-      
       <command_topic>cmd_vel</command_topic>
       <!-- output -->
       <publish_odom>true</publish_odom>
       <publish_odom_tf>true</publish_odom_tf>
       <publish_wheel_tf>false</publish_wheel_tf>
-
       <odometry_topic>odom</odometry_topic>
       <odometry_frame>odom</odometry_frame>
       <robot_base_frame>base_footprint</robot_base_frame>
-
     </plugin>
-
-    <plugin name="turtlebot3_joint_state" filename="libgazebo_ros_joint_state_publisher.so">
+    <plugin name="joint_state_publisher" filename="libgazebo_ros_joint_state_publisher.so">
       <ros>
-        <!-- <namespace>/tb3</namespace> -->
         <argument>~/out:=joint_states</argument>
       </ros>
       <update_rate>30</update_rate>
       <joint_name>joint_left_wheel</joint_name>
       <joint_name>joint_right_wheel</joint_name>
     </plugin>
-
-</gazebo>
-   <link name="base_scan">
+  </gazebo>
+  <link name="base_scan">
     <visual>
       <geometry>
-        <sphere radius="0.05"/>
+        <sphere radius="0.05" />
       </geometry>
-      <material name="white"/>
+      <material name="white" />
     </visual>
-
     <collision>
       <geometry>
-        <sphere radius="0.05"/>
+        <sphere radius="0.05" />
       </geometry>
     </collision>
     <inertial>
       <mass value="0.1" />
       <inertia ixx="0.0001" ixy="0" ixz="0" iyy="0.0001" iyz="0" izz="0.0001" />
     </inertial>
-
-
- </link>
-
-
- <joint name="base_scan_joint" type="fixed">
-  <child link="base_scan" />
-  <parent link="base_link" />
-  <origin xyz="0 0 0.051"/> <!-- +0.051 iso 0.05 otherwise vision clips into top of robot-->
- </joint>
-
-<gazebo reference="base_scan">
-   <sensor name="hls_lfcd_lds" type="ray">
-       <always_on>true</always_on>
-       <visualize>true</visualize>
-       <update_rate>5</update_rate>
-       <ray>
-         <scan>
-           <horizontal>
-             <samples>360</samples>
-             <resolution>1.000000</resolution>
-             <min_angle>0.000000</min_angle>
-             <max_angle>6.280000</max_angle>
-           </horizontal>
-         </scan>
-         <range>
-           <min>0.120000</min>
-           <max>3.5</max>
-           <resolution>0.015000</resolution>
-         </range>
-         <noise>
-
-           <type>gaussian</type>
-           <mean>0.0</mean>
-           <stddev>0.01</stddev>
-         </noise>
-       </ray>
-       <plugin name="turtlebot3_laserscan" filename="libgazebo_ros_ray_sensor.so">
-
-         <ros>
-           <!-- <namespace>/tb3</namespace> -->
-           <argument>~/out:=scan</argument>
-         </ros>
-         <output_type>sensor_msgs/LaserScan</output_type>
-         <frame_name>base_scan</frame_name>
-       </plugin>
-     </sensor>
- </gazebo>
-
-
- </robot>
+  </link>
+  <joint name="base_scan_joint" type="fixed">
+    <child link="base_scan" />
+    <parent link="base_link" />
+    <origin xyz="0 0 0.051" />
+    <!-- +0.051 iso 0.05 otherwise vision clips into top of robot-->
+  </joint>
+  <gazebo reference="base_scan">
+    <sensor name="raycaster" type="ray">
+      <always_on>true</always_on>
+      <visualize>true</visualize>
+      <update_rate>5</update_rate>
+      <ray>
+        <scan>
+          <horizontal>
+            <samples>360</samples>
+            <resolution>1.000000</resolution>
+            <min_angle>0.000000</min_angle>
+            <max_angle>6.280000</max_angle>
+          </horizontal>
+        </scan>
+        <range>
+          <min>0.120000</min>
+          <max>3.5</max>
+          <resolution>0.015000</resolution>
+        </range>
+        <noise>
+          <type>gaussian</type>
+          <mean>0.0</mean>
+          <stddev>0.01</stddev>
+        </noise>
+      </ray>
+      <plugin name="laserscan" filename="libgazebo_ros_ray_sensor.so">
+        <ros>
+          <argument>~/out:=scan</argument>
+        </ros>
+        <output_type>sensor_msgs/LaserScan</output_type>
+        <frame_name>base_scan</frame_name>
+      </plugin>
+    </sensor>
+  </gazebo>
+</robot>
