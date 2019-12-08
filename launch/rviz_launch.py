@@ -14,8 +14,15 @@ def generate_launch_description():
     urdf_dir = os.path.join(bringup_dir, 'urdf')
     model_file = os.path.join(urdf_dir, 'vacuumcleaner','model.urdf')
     rviz_config_file = os.path.join(bringup_dir, "config.rviz")
+    cartographer_config_dir = bringup_dir
+    configuration_basename = 'cartographer.lua'
+    resolution = '0.05'
+    publish_period_sec ='1.0'
+
+
     print(rviz_config_file)
     print(model_file)
+    print(cartographer_config_dir)
     use_sim_time = 'true'
     return LaunchDescription([
         Node(
@@ -31,6 +38,20 @@ def generate_launch_description():
             output='screen',
             parameters=[{'use_sim_time': use_sim_time}],
             arguments=[model_file]),
+        Node(
+            package='cartographer_ros',
+            node_executable='cartographer_node',
+            node_name='cartographer_node',
+            output='screen',
+            parameters=[{'use_sim_time': use_sim_time}],
+            arguments=['-configuration_directory', cartographer_config_dir, '-configuration_basename', configuration_basename]),
+        Node(
+            package='cartographer_ros',
+            node_executable='occupancy_grid_node',
+            node_name='occupancy_grid_node',
+            output='screen',
+            parameters=[{'use_sim_time': use_sim_time}],
+            arguments=['-resolution', resolution, '-publish_period_sec', publish_period_sec]),
 #       Node(
 #            package='joint_state_publisher',
 #            node_executable='joint_state_publisher',

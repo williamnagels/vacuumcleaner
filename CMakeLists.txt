@@ -41,5 +41,6 @@ ament_target_dependencies(vacuumcleaner rclcpp)
 
 install(TARGETS vacuumcleaner DESTINATION lib)
 install(FILES config.rviz DESTINATION share/${PROJECT_NAME})
+install(FILES cartographer.lua DESTINATION share/${PROJECT_NAME})
 Install(DIRECTORY launch DESTINATION share/${PROJECT_NAME})
 Install(DIRECTORY urdf DESTINATION share/${PROJECT_NAME})
