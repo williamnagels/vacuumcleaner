@@ -2,3 +2,5 @@ install
 log
 build
 launch/__pycache__
+devel
+.catkin_workspace
