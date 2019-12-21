@@ -124,7 +124,6 @@
     <plugin name="joint_state_publisher" filename="libgazebo_ros_joint_state_publisher.so">
       <updateRate>30</updateRate>
       <jointName>joint_left_wheel, joint_right_wheel</jointName>
-      <remap from="/vacuumcleaner/joint_states" to="/joint_states" />
     </plugin>
   </gazebo>
   <link name="base_scan">
@@ -176,6 +175,7 @@
         </noise>
       </ray>
       <plugin name="laserscan" filename="libgazebo_ros_laser.so">
+        <robotNamespace>vacuumcleaner</robotNamespace>	    
 	<topicName>scan</topicName>
 	<frameName>base_scan</frameName>
       </plugin>
