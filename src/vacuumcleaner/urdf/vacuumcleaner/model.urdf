@@ -175,7 +175,6 @@
         </noise>
       </ray>
       <plugin name="laserscan" filename="libgazebo_ros_laser.so">
-        <robotNamespace>vacuumcleaner</robotNamespace>	    
 	<topicName>scan</topicName>
 	<frameName>base_scan</frameName>
       </plugin>
