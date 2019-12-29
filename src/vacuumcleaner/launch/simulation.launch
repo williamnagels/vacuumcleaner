@@ -1,7 +1,12 @@
 <launch>
   <arg name="gui"        default="true"/>
   <arg name="world_file" default="world"/>
+  <remap from="cmd_vel" to="/vacuumcleaner/cmd_vel"/>
+  <rosparam file="$(find vacuumcleaner)/nav2d.yaml"/>
+
+  <param name="use_sim_time" value="true" />
   <param name="robot_description" textfile="$(find vacuumcleaner)/urdf/vacuumcleaner/model.urdf" />
+
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
     <arg name="use_sim_time" value="true"/>
     <arg name="debug" value="false"/>
@@ -9,9 +14,27 @@
     <arg name="world_name" value="$(find vacuumcleaner)/world"/>
   </include>
 
-   <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" ns="vacuumcleaner">
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" ns="vacuumcleaner">
     <param name="publish_frequency" type="double" value="30.0" />
   </node>
 
+  <node name="Navigator" pkg="nav2d_navigator" type="navigator">
+    <rosparam file="$(find vacuumcleaner)/navigator.yaml"/>
+  </node>
+  
+  <node name="GetMap" pkg="nav2d_navigator" type="get_map_client" />
+  <node name="Explore" pkg="nav2d_navigator" type="explore_client" />
+  <node name="SetGoal" pkg="nav2d_navigator" type="set_goal_client" />
+  <node name="Operator" pkg="nav2d_operator" type="operator" >
+    <rosparam file="$(find vacuumcleaner)/operator.yaml"/>
+    <rosparam file="$(find vacuumcleaner)/costmap.yaml" ns="local_map" />
+  </node>
+
+  <node name="Mapper" pkg="nav2d_karto" type="mapper">
+    <remap from="karto_in" to="/shared_scans_r2"/>
+    <remap from="karto_out" to="/shared_scans_r2"/>
+    <rosparam file="$(find nav2d_tutorials)/param/mapper.yaml"/>
+  </node>
+  <node name="RVIZ" pkg="rviz" type="rviz" args=" -d $(find nav2d_tutorials)/param/tutorial3.rviz" />
 </launch>
 

@@ -4,3 +4,5 @@ build
 launch/__pycache__
 devel
 .catkin_workspace
+frames.gv
+frames.pdf
