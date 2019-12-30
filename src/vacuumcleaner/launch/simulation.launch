@@ -33,7 +33,7 @@
   <node name="Mapper" pkg="nav2d_karto" type="mapper">
     <remap from="karto_in" to="/shared_scans_r2"/>
     <remap from="karto_out" to="/shared_scans_r2"/>
-    <rosparam file="$(find nav2d_tutorials)/param/mapper.yaml"/>
+    <rosparam file="$(find vacuumcleaner)/mapper.yaml"/>
   </node>
   <node name="RVIZ" pkg="rviz" type="rviz" args=" -d $(find nav2d_tutorials)/param/tutorial3.rviz" />
 </launch>

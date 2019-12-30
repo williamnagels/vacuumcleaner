@@ -2,9 +2,9 @@
 # Defines topics services and frames for all modules
 
 ### TF frames #############################################
-laser_frame: vacuumcleaner/base_scan
-robot_frame: vacuumcleaner/base_link
-odometry_frame: vacuumcleaner/odom
+laser_frame: base_scan
+robot_frame: base_link
+odometry_frame: odom
 offset_frame: offset
 map_frame: map
 
