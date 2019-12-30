@@ -1,7 +1,6 @@
 <launch>
   <arg name="gui"        default="true"/>
   <arg name="world_file" default="world"/>
-  <remap from="cmd_vel" to="/vacuumcleaner/cmd_vel"/>
   <rosparam file="$(find vacuumcleaner)/nav2d.yaml"/>
 
   <param name="use_sim_time" value="true" />
