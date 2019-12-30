@@ -1,9 +1,9 @@
 <launch>
   <arg name="gui"        default="true"/>
   <arg name="world_file" default="world"/>
+  <param name="use_sim_time" value="true" />
   <rosparam file="$(find vacuumcleaner)/nav2d.yaml"/>
 
-  <param name="use_sim_time" value="true" />
   <param name="robot_description" textfile="$(find vacuumcleaner)/urdf/vacuumcleaner/model.urdf" />
 
   <include file="$(find gazebo_ros)/launch/empty_world.launch">

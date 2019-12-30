@@ -3,7 +3,7 @@
 
 ### TF frames #############################################
 laser_frame: base_scan
-robot_frame: base_link
+robot_frame: base_footprint
 odometry_frame: odom
 offset_frame: offset
 map_frame: map

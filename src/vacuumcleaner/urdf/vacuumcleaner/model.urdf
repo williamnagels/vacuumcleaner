@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <robot name="vacuumcleaner">
-  <link name="base_footprint" />
-  <link name="base_link">
+  <link name="base_footprint">
     <inertial>
       <mass value="2" />
       <inertia ixx="0.02067" ixy="0" ixz="0" iyy="0.020267" iyz="0" izz="0.04" />
@@ -82,21 +81,16 @@
   <joint name="joint_right_wheel" type="continuous">
     <origin rpy="0 0 0" xyz="-0.02 -0.10 -0.054" />
     <child link="link_right_wheel" />
-    <parent link="base_link" />
+    <parent link="base_footprint" />
     <axis rpy="0 0 0" xyz="0 1 0" />
     <limit effort="10000" velocity="1000" />
   </joint>
   <joint name="joint_left_wheel" type="continuous">
     <origin rpy="0 0 0" xyz="-0.02 0.10 -0.054" />
     <child link="link_left_wheel" />
-    <parent link="base_link" />
+    <parent link="base_footprint" />
     <axis rpy="0 0 0" xyz="0 1 0" />
     <limit effort="10000" velocity="1000" />
-  </joint>
-  <joint name="base_joint" type="fixed">
-    <parent link="base_footprint" />
-    <child link="base_link" />
-    <origin xyz="0 0 0" rpy="0 0 0" />
   </joint>
   <gazebo>
     <plugin name="differential_drive" filename="libgazebo_ros_diff_drive.so">
@@ -140,7 +134,7 @@
   </link>
   <joint name="base_scan_joint" type="fixed">
     <child link="base_scan" />
-    <parent link="base_link" />
+    <parent link="base_footprint" />
     <origin xyz="0 0 0.051" />
     <!-- +0.051 iso 0.05 otherwise vision clips into top of robot-->
   </joint>
