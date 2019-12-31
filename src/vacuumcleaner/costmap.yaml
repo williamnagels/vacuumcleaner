@@ -1,4 +1,4 @@
-global_frame: map
+global_frame: odom
 robot_base_frame: base_footprint
 update_frequency: 5.0
 publish_frequency: 1.0
@@ -20,13 +20,13 @@ map_type: costmap
 track_unknown_space: true
 
 transform_tolerance: 0.3
-obstacle_range: 0.5
+obstacle_range: 1.0
 min_obstacle_height: 0.0
 max_obstacle_height: 2.0
-raytrace_range: 3.5
+raytrace_range: 1.0
 
-robot_radius: 0.04
-inflation_radius: 0.1
+robot_radius: 0.2
+inflation_radius: 1.0
 cost_scaling_factor: 2.0
 lethal_cost_threshold: 100
 observation_sources: scan
