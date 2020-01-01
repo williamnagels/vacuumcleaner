@@ -1,7 +1,7 @@
 ### Mapper ################################################
 
 grid_resolution: 0.1
-range_threshold: 30.0
+range_threshold: 10.0
 map_update_rate: 5
 publish_pose_graph: true
 max_covariance: 0.01

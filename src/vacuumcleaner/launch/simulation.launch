@@ -1,7 +1,7 @@
 <launch>
+  <param name="use_sim_time" value="true" />
   <arg name="gui"        default="true"/>
   <arg name="world_file" default="world"/>
-  <param name="use_sim_time" value="true" />
   <rosparam file="$(find vacuumcleaner)/nav2d.yaml"/>
 
   <param name="robot_description" textfile="$(find vacuumcleaner)/urdf/vacuumcleaner/model.urdf" />
@@ -34,6 +34,6 @@
     <remap from="karto_out" to="/shared_scans_r2"/>
     <rosparam file="$(find vacuumcleaner)/mapper.yaml"/>
   </node>
-  <node name="RVIZ" pkg="rviz" type="rviz" args=" -d $(find nav2d_tutorials)/param/tutorial3.rviz" />
+  <node name="RVIZ" pkg="rviz" type="rviz" args=" -d $(find vacuumcleaner)/config.rviz" />
 </launch>
 
