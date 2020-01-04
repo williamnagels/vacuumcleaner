@@ -1,0 +1,35 @@
+<launch>
+  <param name="use_sim_time" value="true" />
+  <arg name="gui"        default="true"/>
+  <arg name="world_file" default="world"/>
+
+  <param name="robot_description" textfile="$(find vacuumcleaner)/urdf/vacuumcleaner/model.urdf" />
+
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="use_sim_time" value="true"/>
+    <arg name="debug" value="false"/>
+    <arg name="gui" value="$(arg gui)" />
+    <arg name="world_name" value="$(find vacuumcleaner)/world"/>
+  </include>
+
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" ns="vacuumcleaner">
+    <param name="publish_frequency" type="double" value="30.0" />
+  </node>
+
+  <master auto="start"/>
+  <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+    <rosparam file="$(find vacuumcleaner)/navigation/costmap_common_params.yaml" command="load" ns="global_costmap" /> 
+    <rosparam file="$(find vacuumcleaner)/navigation/costmap_common_params.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find vacuumcleaner)/navigation/local_costmap_params.yaml" command="load" />
+    <rosparam file="$(find vacuumcleaner)/navigation/global_costmap_params.yaml" command="load" /> 
+    <rosparam file="$(find vacuumcleaner)/navigation/base_local_planner_params.yaml" command="load" />
+  </node>
+ 
+  <node pkg="gmapping" type="slam_gmapping" name="gmapping_thing" output="screen">
+    <param name="base_frame" value="base_footprint"/>
+    <param name="odom_frame" value="odom"/>
+  </node>
+
+  <node name="RVIZ" pkg="rviz" type="rviz" args=" -d $(find vacuumcleaner)/config.rviz" />
+</launch>
+
