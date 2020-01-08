@@ -1,0 +1,5 @@
+<launch>
+  <include file="$(find vacuumcleaner)/launch/simulation.launch" />
+  <include file="$(find vacuumcleaner)/launch/explore.launch" />
+</launch>
+

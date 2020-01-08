@@ -3,7 +3,7 @@
   <arg name="gui"        default="true"/>
   <arg name="world_file" default="world"/>
 
-  <param name="robot_description" textfile="$(find vacuumcleaner)/config/model/model.urdf" />
+  <param name="robot_description" textfile="$(find vacuumcleaner)/config/vacuumcleaner_model/model.urdf" />
 
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
     <arg name="use_sim_time" value="true"/>
