@@ -28,6 +28,9 @@
   <node pkg="gmapping" type="slam_gmapping" name="gmapping_thing" output="screen">
     <param name="base_frame" value="base_footprint"/>
     <param name="odom_frame" value="odom"/>
+    <param name="map_update_interval" value="0.1" />
+    <param name="delta" value="0.05" />
+    <param name="particles" value="1" />
   </node>
 
   <node name="RVIZ" pkg="rviz" type="rviz" args=" -d $(find vacuumcleaner)/config/config.rviz" />
