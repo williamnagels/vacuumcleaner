@@ -1,14 +1,24 @@
 <robot name="vacuumcleaner" xmlns:xacro="http://wiki.ros.org/xacro">
+  <xacro:macro name="inertial_disk" params="mass radius height">
+    <inertial>
+      <origin rpy="0 1.5707 1.5707" xyz="0 0 0" />
+      <mass value="${mass}" />
+      <inertia
+        ixx="${1/12 * mass * (3* radius * radius + height * height)}"
+        ixy="0"
+        ixz="0"
+        iyy="${1/12 * mass * (3* radius * radius + height * height)}"
+        iyz="0"
+        izz="${1/2 * mass * radius * radius}" />
+    </inertial>
+  </xacro:macro>
+
   <xacro:property name="body_height" value="0.04"/>
   <xacro:arg name="body_radius" default="0.2" />
   <xacro:macro name="wheel" params="suffix radius xoffset yoffset zoffset">
     <link name="link_${suffix}_wheel">
-      <inertial>
-        <mass value="0.1" />
-        <origin rpy="0 1.5707 1.5707" xyz="0 0 0" />
-        <inertia ixx="2.9925e-5" ixy="0" ixz="0" iyy="2.9925e-5" iyz="0" izz="5.4450e-5" />
-      </inertial>
-      <collision name="link_right_wheel_collision">
+     <xacro:inertial_disk mass="0.1" radius="${radius}" height="0.018" />
+     <collision name="link_right_wheel_collision">
         <origin rpy="0 1.5707 1.5707" xyz="0 0 0" />
         <geometry>
           <cylinder length="0.018" radius="${radius}" />
@@ -40,10 +50,7 @@
   <xacro:wheel suffix="right" radius="0.033" xoffset="-0.02" yoffset="${-$(arg body_radius) + 0.01}" zoffset="-0.054"/>
 
   <link name="base_footprint">
-    <inertial>
-      <mass value="2" />
-      <inertia ixx="0.02067" ixy="0" ixz="0" iyy="0.020267" iyz="0" izz="0.04" />
-    </inertial>
+    <xacro:inertial_disk mass="2" radius="$(arg body_radius)" height="${body_height}" />
     <visual>
       <geometry>
 	      <cylinder length="${body_height}" radius="$(arg body_radius)" />
