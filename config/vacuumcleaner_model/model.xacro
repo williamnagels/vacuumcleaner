@@ -1,5 +1,44 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<robot name="vacuumcleaner">
+<robot name="vacuumcleaner" xmlns:xacro="http://wiki.ros.org/xacro">
+  <xacro:property name="body_height" value="0.04"/>
+  <xacro:arg name="body_radius" default="0.2" />
+  <xacro:macro name="wheel" params="suffix radius xoffset yoffset zoffset">
+    <link name="link_${suffix}_wheel">
+      <inertial>
+        <mass value="0.1" />
+        <origin rpy="0 1.5707 1.5707" xyz="0 0 0" />
+        <inertia ixx="2.9925e-5" ixy="0" ixz="0" iyy="2.9925e-5" iyz="0" izz="5.4450e-5" />
+      </inertial>
+      <collision name="link_right_wheel_collision">
+        <origin rpy="0 1.5707 1.5707" xyz="0 0 0" />
+        <geometry>
+          <cylinder length="0.018" radius="${radius}" />
+        </geometry>
+      </collision>
+      <visual name="link_right_wheel_visual">
+        <origin rpy="0 1.5707 1.5707" xyz="0 0 0" />
+        <geometry>
+          <cylinder length="0.018" radius="${radius}" />
+        </geometry>
+      </visual>
+    </link>
+    <gazebo reference="link_${suffix}_wheel">
+       <mu1>100000</mu1>
+       <mu2>100000</mu2>
+       <kp>1e5</kp>
+       <material>Gazebo/Black</material>
+    </gazebo>
+    <joint name="joint_${suffix}_wheel" type="continuous">
+       <origin rpy="0 0 0" xyz="${xoffset} ${yoffset} ${zoffset}" />
+       <child link="link_${suffix}_wheel" />
+       <parent link="base_footprint" />
+       <axis rpy="0 0 0" xyz="0 1 0" />
+       <limit effort="10000" velocity="1000" />
+    </joint>
+  </xacro:macro>
+
+  <xacro:wheel suffix="left" radius="0.033" xoffset="-0.02" yoffset="${$(arg body_radius) - 0.01}" zoffset="-0.054"/>
+  <xacro:wheel suffix="right" radius="0.033" xoffset="-0.02" yoffset="${-$(arg body_radius) + 0.01}" zoffset="-0.054"/>
+
   <link name="base_footprint">
     <inertial>
       <mass value="2" />
@@ -7,93 +46,29 @@
     </inertial>
     <visual>
       <geometry>
-        <cylinder length="0.04" radius="0.2" />
+	      <cylinder length="${body_height}" radius="$(arg body_radius)" />
       </geometry>
     </visual>
     <collision>
       <geometry>
-        <cylinder length="0.04" radius="0.2" />
+	      <cylinder length="${body_height}" radius="$(arg body_radius)" />
       </geometry>
     </collision>
     <collision name="caster_front_collision">
-      <origin rpy="0 0 0" xyz="0.15 0 -0.054" />
+      <origin rpy="0 0 0" xyz="${$(arg body_radius)-0.03} 0 -0.054" />
       <geometry>
         <sphere radius="0.033" />
       </geometry>
     </collision>
     <visual name="caster_front_visual">
-      <origin rpy="0 0 0" xyz="0.15 0 -0.054" />
+      <origin rpy="0 0 0" xyz="${$(arg body_radius) - 0.03} 0 -0.054" />
       <geometry>
         <sphere radius="0.033" />
       </geometry>
     </visual>
   </link>
-  <link name="link_right_wheel">
-    <inertial>
-      <mass value="0.1" />
-      <origin rpy="0 1.5707 1.5707" xyz="0 0 0" />
-      <inertia ixx="2.9925e-5" ixy="0" ixz="0" iyy="2.9925e-5" iyz="0" izz="5.4450e-5" />
-    </inertial>
-    <collision name="link_right_wheel_collision">
-      <origin rpy="0 1.5707 1.5707" xyz="0 0 0" />
-      <geometry>
-        <cylinder length="0.018" radius="0.033" />
-      </geometry>
-    </collision>
-    <visual name="link_right_wheel_visual">
-      <origin rpy="0 1.5707 1.5707" xyz="0 0 0" />
-      <geometry>
-        <cylinder length="0.018" radius="0.033" />
-      </geometry>
-    </visual>
-  </link>
-  <gazebo reference="link_right_wheel">
-    <mu1>100000</mu1>
-    <mu2>100000</mu2>
-    <kp>1e5</kp>
-    <material>Gazebo/Black</material>
-  </gazebo>
-  <link name="link_left_wheel">
-    <inertial>
-      <mass value="0.1" />
-      <origin rpy="0 1.5707 1.5707" xyz="0 0 0" />
-      <inertia ixx="2.9925e-5" ixy="0" ixz="0" iyy="2.9925e-5" iyz="0" izz="5.4450e-5" />
-    </inertial>
-    <collision name="link_left_wheel_collision">
-      <origin rpy="0 1.5707 1.5707" xyz="0 0 0" />
-      <geometry>
-        <cylinder length="0.018" radius="0.033" />
-      </geometry>
-    </collision>
-    <visual name="link_left_wheel_visual">
-      <origin rpy="0 1.5707 1.5707" xyz="0 0 0" />
-      <geometry>
-        <cylinder length="0.018" radius="0.033" />
-      </geometry>
-    </visual>
-  </link>
-  <gazebo reference="link_left_wheel">
-    <mu1>100000</mu1>
-    <mu2>100000</mu2>
-    <kp>1e5</kp>
-    <material>Gazebo/Black</material>
-  </gazebo>
-  <joint name="joint_right_wheel" type="continuous">
-    <origin rpy="0 0 0" xyz="-0.02 -0.10 -0.054" />
-    <child link="link_right_wheel" />
-    <parent link="base_footprint" />
-    <axis rpy="0 0 0" xyz="0 1 0" />
-    <limit effort="10000" velocity="1000" />
-  </joint>
-  <joint name="joint_left_wheel" type="continuous">
-    <origin rpy="0 0 0" xyz="-0.02 0.10 -0.054" />
-    <child link="link_left_wheel" />
-    <parent link="base_footprint" />
-    <axis rpy="0 0 0" xyz="0 1 0" />
-    <limit effort="10000" velocity="1000" />
-  </joint>
   <gazebo>
-    <plugin name="differential_drive" filename="libgazebo_ros_diff_drive.so">
+   <plugin name="differential_drive" filename="libgazebo_ros_diff_drive.so">
       <rosDebugLevel>na</rosDebugLevel>	     
       <updateRate>30</updateRate>
       <leftJoint>joint_left_wheel</leftJoint>

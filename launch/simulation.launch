@@ -2,8 +2,8 @@
   <param name="use_sim_time" value="true" />
   <arg name="gui"        default="true"/>
   <arg name="world_file" default="world"/>
-
-  <param name="robot_description" textfile="$(find vacuumcleaner)/config/vacuumcleaner_model/model.urdf" />
+  <arg name="radius"/>
+  <param name="robot_description" command="xacro '$(find vacuumcleaner)/config/vacuumcleaner_model/model.xacro' body_radius:=$(arg radius)"/>
 
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
     <arg name="use_sim_time" value="true"/>
@@ -11,6 +11,7 @@
     <arg name="gui" value="$(arg gui)" />
     <arg name="world_name" value="$(find vacuumcleaner)/config/world"/>
   </include>
+  <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -model vacuumcleaner -x -2.0 -y -0.5 -z 0.087 -R 0.0 -P 0.0 -Y 0.0" />
 
   <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" ns="vacuumcleaner">
     <param name="publish_frequency" type="double" value="30.0" />
@@ -29,7 +30,7 @@
     <param name="base_frame" value="base_footprint"/>
     <param name="odom_frame" value="odom"/>
     <param name="map_update_interval" value="0.1" />
-    <param name="delta" value="0.1" />
+    <param name="delta" value="$(arg radius)" />
     <param name="particles" value="1" />
   </node>
 

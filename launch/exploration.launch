@@ -1,5 +1,8 @@
 <launch>
-  <include file="$(find vacuumcleaner)/launch/simulation.launch" />
+  <arg name="radius" />
+  <include file="$(find vacuumcleaner)/launch/simulation.launch">
+    <arg name="radius" value="$(arg radius)"/>
+  </include>
   <include file="$(find vacuumcleaner)/launch/explore.launch" />
 </launch>
 
