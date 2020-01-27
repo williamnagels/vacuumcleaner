@@ -3,9 +3,9 @@ TrajectoryPlannerROS:
   min_vel_x: 0.05
   max_vel_theta: 1.0
 
-  acc_lim_theta: 0.3
-  acc_lim_x: 0.3
-  acc_lim_y: 0.3
+  acc_lim_theta: 0.02
+  acc_lim_x: 0.02
+  acc_lim_y: 0.02
   latch_xy_goal_tolerance: true
 
   holonomic_robot: false
