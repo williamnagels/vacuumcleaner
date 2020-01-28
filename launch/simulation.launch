@@ -11,8 +11,6 @@
     <arg name="gui" value="$(arg gui)" />
     <arg name="world_name" value="$(find vacuumcleaner)/config/world"/>
   </include>
-  <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -model vacuumcleaner -x -2.0 -y -0.5 -z 0.087 -R 0.0 -P 0.0 -Y 0.0" />
-
   <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" ns="vacuumcleaner">
     <param name="publish_frequency" type="double" value="30.0" />
   </node>
@@ -37,5 +35,7 @@
   </node>
 
   <node name="RVIZ" pkg="rviz" type="rviz" args=" -d $(find vacuumcleaner)/config/config.rviz" />
+  <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -model vacuumcleaner -x -2.0 -y -0.5 -z .07 -R 0.0 -P 0.0 -Y 0.0" />
+
 </launch>
 

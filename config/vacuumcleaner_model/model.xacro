@@ -1,6 +1,13 @@
 <robot name="vacuumcleaner" xmlns:xacro="http://wiki.ros.org/xacro">
+  <!-- Radius of center disk (meters) -->
+  <xacro:arg name="body_radius" default="0.1"/>   
+
+  <!-- Height of center disk (meters)-->
+  <xacro:property name="body_height" value="0.04"/>
+  
   <xacro:macro name="inertial_disk" params="mass radius height orientation">
     <inertial>
+      <debug mass="${mass}" radius="${radius}" height="${height}" />
       <origin rpy="${orientation}" xyz="0 0 0" />
       <mass value="${mass}" />
       <inertia
@@ -13,19 +20,16 @@
     </inertial>
   </xacro:macro>
 
-  <xacro:property name="body_height" value="0.04"/>
-  <xacro:arg name="body_radius" default="0.2" />
   <xacro:macro name="wheel" params="suffix radius xoffset yoffset zoffset">
      <link name="link_${suffix}_wheel">
-     <xacro:inertial_disk mass="0.1" radius="${radius}" height="0.018" orientation="0 1.5757 1.5757"/>
-  
-     <collision name="link_right_wheel_collision">
+     <xacro:inertial_disk mass="0.250" radius="${radius}" height="0.018" orientation="0 1.5757 1.5757"/>
+     <collision name="link_${suffix}_wheel_collision">
         <origin rpy="0 1.5757 1.5757" xyz="0 0 0" />
         <geometry>
           <cylinder length="0.018" radius="${radius}" />
         </geometry>
       </collision>
-      <visual name="link_right_wheel_visual">
+      <visual name="link_${suffix}_wheel_visual">
         <origin rpy="0 1.5757 1.5757" xyz="0 0 0" />
         <geometry>
           <cylinder length="0.018" radius="${radius}" />
@@ -33,8 +37,8 @@
       </visual>
     </link>
     <gazebo reference="link_${suffix}_wheel">
-       <mu1>100000</mu1>
-       <mu2>100000</mu2>
+       <mu1>1000000</mu1>
+       <mu2>1000000</mu2>
        <kp>1e5</kp>
        <material>Gazebo/Black</material>
     </gazebo>
@@ -43,15 +47,15 @@
        <child link="link_${suffix}_wheel" />
        <parent link="base_footprint" />
        <axis rpy="0 0 0" xyz="0 1 0" />
-       <limit effort="10000" velocity="1000" />
+       <!--<limit effort="10000" velocity="1000" />-->
     </joint>
   </xacro:macro>
 
-  <xacro:wheel suffix="left" radius="0.033" xoffset="-0.01" yoffset="${($(arg body_radius)-0.16)}" zoffset="-0.054"/>
-  <xacro:wheel suffix="right" radius="0.033" xoffset="-0.01" yoffset="${-($(arg body_radius)-0.16)}" zoffset="-0.054"/>
+  <xacro:wheel suffix="left" radius="0.033" xoffset="0" yoffset="${$(arg body_radius)}" zoffset="-0.054"/>
+  <xacro:wheel suffix="right" radius="0.033" xoffset="0" yoffset="${-$(arg body_radius)}" zoffset="-0.054"/>
 
   <link name="base_footprint">
-    <xacro:inertial_disk mass="2" radius="$(arg body_radius)" height="${body_height}" orientation="0 0 0"/>
+    <xacro:inertial_disk mass="0.800" radius="$(arg body_radius)" height="${body_height}" orientation="0 0 0" />
     <visual>
       <geometry>
 	      <cylinder length="${body_height}" radius="$(arg body_radius)" />
@@ -81,10 +85,9 @@
       <updateRate>30</updateRate>
       <leftJoint>joint_left_wheel</leftJoint>
       <rightJoint>joint_right_wheel</rightJoint>
-      <wheelSeparation>${ $(arg body_radius)*2 - 0.16*2}</wheelSeparation>
+      <wheelSeparation>${2*$(arg body_radius)}</wheelSeparation>
       <wheelDiameter>0.066</wheelDiameter>
-      <wheelTorque>20</wheelTorque>
-      <wheelAcceleration>0.1</wheelAcceleration>
+      <wheelTorque>150</wheelTorque>
       <commandTopic>/cmd_vel</commandTopic>
       <publishOdom>true</publishOdom>
       <publishOdomTF>true</publishOdomTF>
@@ -110,7 +113,14 @@
         <sphere radius="0.05" />
       </geometry>
     </collision>
-    <xacro:inertial_disk mass="0.001" radius="0.05" height="0.018" orientation="0 0 0"/>
+
+    <inertial>
+      <mass value="0.01" />
+      <inertia  ixx="0.001" ixy="0.0"  ixz="0.0"  
+              iyy="0.001"  iyz="0.0"  
+              izz="0.001" /> 
+    </inertial>
+
   </link>
   <joint name="base_scan_joint" type="fixed">
     <child link="base_scan" />
