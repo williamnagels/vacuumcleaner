@@ -35,7 +35,7 @@
   </node>
 
   <node name="RVIZ" pkg="rviz" type="rviz" args=" -d $(find vacuumcleaner)/config/config.rviz" />
-  <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -model vacuumcleaner -x -2.0 -y -0.5 -z .060 -R 0.0 -P 0.0 -Y 0.0" />
+  <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -model vacuumcleaner -x -2.0 -y -0.5 -z 0 -R 0.0 -P 0.0 -Y 0.0" />
 
 </launch>
 
