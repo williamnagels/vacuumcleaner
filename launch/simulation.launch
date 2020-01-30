@@ -22,15 +22,15 @@
     <rosparam file="$(find vacuumcleaner)/config/local_costmap_params.yaml" command="load" />
     <rosparam file="$(find vacuumcleaner)/config/global_costmap_params.yaml" command="load" /> 
     <rosparam file="$(find vacuumcleaner)/config/base_local_planner_params.yaml" command="load" />
-    <param name="global_costmap/resolution" value="$(arg radius)"/>
-    <param name="local_costmap/resolution" value="$(arg radius)"/>
+    <param name="global_costmap/resolution" value="$(eval arg('radius')/2)"/>
+    <param name="local_costmap/resolution" value="$(eval arg('radius')/2)"/>
   </node>
  
   <node pkg="gmapping" type="slam_gmapping" name="gmapping_thing" output="screen">
     <param name="base_frame" value="base_footprint"/>
     <param name="odom_frame" value="odom"/>
     <param name="map_update_interval" value="0.1" />
-    <param name="delta" value="$(eval 2* arg('radius'))" />
+    <param name="delta" value="$(eval arg('radius')*2)" />
     <param name="particles" value="1" />
   </node>
 

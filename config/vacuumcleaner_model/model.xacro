@@ -61,11 +61,11 @@
 
   <xacro:wheel suffix="left" radius="0.030" xoffset="0" yoffset="${$(arg body_radius)}" zoffset="-0.055"/>
   <xacro:wheel suffix="right" radius="0.030" xoffset="0" yoffset="${-$(arg body_radius)}" zoffset="-0.055"/>
-  <link name="dummy" />
+  <!--<link name="dummy" />
   <joint name="dummy_joint" type="fixed">
      <parent link="dummy"/>
      <child link="base_footprint"/>
-  </joint>
+  </joint>-->
   <link name="base_footprint">
     <xacro:disk_inertia mass="0.850" radius="$(arg body_radius)" height="${body_height}" orientation="0 0 0" />
     <visual>
@@ -129,8 +129,6 @@
       <odometryFrame>/odom</odometryFrame>
       <robotBaseFrame>/base_footprint</robotBaseFrame>
       <wheelAcceleration>1.0</wheelAcceleration>
-      <publishTf>1</publishTf>
-      <publishWheelJointState>false</publishWheelJointState>
     </plugin>
   </gazebo>
   <gazebo>
