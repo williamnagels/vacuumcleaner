@@ -24,7 +24,9 @@
     <rosparam file="$(find vacuumcleaner)/config/base_local_planner_params.yaml" command="load" />
     <param name="global_costmap/resolution" value="$(eval arg('radius')/2)"/>
     <param name="local_costmap/resolution" value="$(eval arg('radius')/2)"/>
-  </node>
+    <param name="global_costmap/robot_radius" value="$(eval arg('radius'))"/>
+    <param name="local_costmap/robot_radius" value="$(eval arg('radius'))"/>
+   </node>
  
   <node pkg="gmapping" type="slam_gmapping" name="gmapping_thing" output="screen">
     <param name="base_frame" value="base_footprint"/>
