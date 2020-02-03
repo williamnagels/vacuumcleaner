@@ -22,8 +22,8 @@
     <rosparam file="$(find vacuumcleaner)/config/local_costmap_params.yaml" command="load" />
     <rosparam file="$(find vacuumcleaner)/config/global_costmap_params.yaml" command="load" /> 
     <rosparam file="$(find vacuumcleaner)/config/base_local_planner_params.yaml" command="load" />
-    <param name="global_costmap/resolution" value="$(eval arg('radius'))"/>
-    <param name="local_costmap/resolution" value="$(eval arg('radius'))"/>
+    <param name="global_costmap/resolution" value="0.1"/>
+    <param name="local_costmap/resolution" value="0.1"/>
     <param name="global_costmap/robot_radius" value="$(eval arg('radius'))"/>
     <param name="local_costmap/robot_radius" value="$(eval arg('radius'))"/>
    </node>
