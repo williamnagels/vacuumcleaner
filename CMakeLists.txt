@@ -9,11 +9,11 @@ find_package(catkin REQUIRED COMPONENTS
 find_package(Boost REQUIRED COMPONENTS system)
 
 add_action_files(
-	FILES vacuumcleaner.action
+	FILES cleaning.action
 )
 generate_messages(
-  DEPENDENCIES actionlib_msgs std_msgs  # Or other packages containing msgs
-)
+  DEPENDENCIES actionlib_msgs std_msgs  
+  )
 catkin_package(
   CATKIN_DEPENDS actionlib_msgs
 )
@@ -22,15 +22,15 @@ catkin_package(
 ###########
 
 include_directories(include ${catkin_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
-add_executable(vacuumcleaner_server src/vacuumcleaner_server.cpp)
+add_executable(server src/server.cpp)
 
 target_link_libraries(
-  vacuumcleaner_server
+  server
   ${catkin_LIBRARIES}
 )
 
 add_dependencies(
-  vacuumcleaner_server
+  server
   ${vacuumcleaner_EXPORTED_TARGETS}
 )
 #############
@@ -41,8 +41,7 @@ add_dependencies(
 # install roslaunch files
 install(DIRECTORY launch/ DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/launch)
 install(DIRECTORY config/ DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/config)
-
-install(TARGETS vacuumcleaner_server RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+install(TARGETS server RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
 #############
 ## Testing ##
