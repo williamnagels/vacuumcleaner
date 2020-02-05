@@ -33,6 +33,7 @@ public:
 
     uint64_t number_of_tiles_visited = 0;
     uint64_t number_of_tiles_to_visit = 100;
+    ROS_INFO_STREAM("Received goal: " << *goal);
 
     while(number_of_tiles_to_visit)
     {
@@ -49,6 +50,7 @@ public:
         break;
       }
       _feedback.number_of_tiles_visited = number_of_tiles_visited;
+      _feedback.number_of_tiles_to_visit = number_of_tiles_to_visit;
       _action_server.publishFeedback(_feedback);
       r.sleep();
        

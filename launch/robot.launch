@@ -7,7 +7,8 @@
   <param name="robot_description" command="xacro '$(find vacuumcleaner)/config/vacuumcleaner_model/model.xacro' body_radius:=$(arg radius)"/>
 
 
-  <node pkg="vacuumcleaner" name="server" type="server"/>
+  <node pkg="vacuumcleaner" name="server" type="server" output="screen"/>
+  <node pkg="vacuumcleaner" name="client" type="client" output="screen"/>
   <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" ns="vacuumcleaner">
     <param name="publish_frequency" type="double" value="30.0" />
   </node>

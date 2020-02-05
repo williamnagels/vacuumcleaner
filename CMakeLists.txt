@@ -22,6 +22,18 @@ catkin_package(
 ###########
 
 include_directories(include ${catkin_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
+add_executable(client src/client.cpp)
+
+target_link_libraries( 
+  client
+  ${catkin_LIBRARIES}
+)
+
+add_dependencies(
+  client
+  ${vacuumcleaner_EXPORTED_TARGETS}
+)
+
 add_executable(server src/server.cpp)
 
 target_link_libraries(
@@ -41,7 +53,7 @@ add_dependencies(
 # install roslaunch files
 install(DIRECTORY launch/ DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/launch)
 install(DIRECTORY config/ DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/config)
-install(TARGETS server RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+install(TARGETS client server RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
 #############
 ## Testing ##
