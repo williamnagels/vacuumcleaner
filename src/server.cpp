@@ -12,7 +12,6 @@ private:
 
   // create messages that are used to published feedback/result
   vacuumcleaner::cleaningFeedback _feedback;
-  vacuumcleaner::cleaningResult _result;
   
 public:
 
@@ -29,21 +28,17 @@ public:
 
   void executeCB(vacuumcleaner::cleaningGoalConstPtr goal)
   {
-    // helper variables
     ros::Rate r(1);
     bool success = true;
 
-    // push_back the seeds for the fibonacci sequence
-    _feedback.sequence.clear();
-    _feedback.sequence.push_back(0);
-    _feedback.sequence.push_back(1);
+    uint64_t number_of_tiles_visited = 0;
+    uint64_t number_of_tiles_to_visit = 100;
 
-    // publish info to the console for the user
-    ROS_INFO("%s: Executing, creating fibonacci sequence of order %i with seeds %i, %i", _action_name.c_str(), goal->order, _feedback.sequence[0], _feedback.sequence[1]);
-
-    // start executing the action
-    for(int i=1; i<=goal->order; i++)
+    while(number_of_tiles_to_visit)
     {
+      number_of_tiles_visited++;
+      number_of_tiles_to_visit--;
+
       // check that preempt has not been requested by the client
       if (_action_server.isPreemptRequested() || !ros::ok())
       {
@@ -53,18 +48,18 @@ public:
         success = false;
         break;
       }
-      _feedback.sequence.push_back(_feedback.sequence[i] + _feedback.sequence[i-1]);
+      _feedback.number_of_tiles_visited = number_of_tiles_visited;
       _action_server.publishFeedback(_feedback);
-      
-      // this sleep is not necessary, the sequence is computed at 1 Hz for demonstration purposes
       r.sleep();
+       
     }
 
     if(success)
     {
       ROS_INFO("%s: Succeeded", _action_name.c_str());
-      _result.sequence = _feedback.sequence;
-      _action_server.setSucceeded(_result);
+      vacuumcleaner::cleaningResult result;
+      result.number_of_tiles_visited = number_of_tiles_visited;
+      _action_server.setSucceeded(result);
     }
   }
 };
