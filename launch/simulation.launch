@@ -1,9 +1,13 @@
 <launch>
-  <param name="use_sim_time" value="true" />
+  <arg name="use_sim_time" value="true" />
   <arg name="gui"        default="true"/>
   <arg name="world_file" default="world"/>
   <arg name="radius"/>
-  <param name="robot_description" command="xacro '$(find vacuumcleaner)/config/vacuumcleaner_model/model.xacro' body_radius:=$(arg radius)"/>
+
+  <include file="$(find vacuumcleaner)/launch/robot.launch">
+    <arg name="radius" value="$(arg radius)"/>
+    <arg name="use_sim_time" value="$(arg use_sim_time)" />
+  </include>
 
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
     <arg name="use_sim_time" value="true"/>
@@ -12,31 +16,6 @@
     <arg name="world_name" value="$(find vacuumcleaner)/config/world"/>
   </include>
 
-  <node pkg="vacuumcleaner" name="vacuumcleaner_server" type="vacuumcleaner_server"/>
-  <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" ns="vacuumcleaner">
-    <param name="publish_frequency" type="double" value="30.0" />
-  </node>
-
-  <master auto="start"/>
-  <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
-    <rosparam file="$(find vacuumcleaner)/config/costmap_common_params.yaml" command="load" ns="global_costmap" /> 
-    <rosparam file="$(find vacuumcleaner)/config/costmap_common_params.yaml" command="load" ns="local_costmap" />
-    <rosparam file="$(find vacuumcleaner)/config/local_costmap_params.yaml" command="load" />
-    <rosparam file="$(find vacuumcleaner)/config/global_costmap_params.yaml" command="load" /> 
-    <rosparam file="$(find vacuumcleaner)/config/base_local_planner_params.yaml" command="load" />
-    <param name="global_costmap/resolution" value="0.05"/>
-    <param name="local_costmap/resolution" value="0.05"/>
-    <param name="global_costmap/robot_radius" value="$(eval arg('radius'))"/>
-    <param name="local_costmap/robot_radius" value="$(eval arg('radius'))"/>
-   </node>
- 
-  <node pkg="gmapping" type="slam_gmapping" name="gmapping_thing" output="screen">
-    <param name="base_frame" value="base_footprint"/>
-    <param name="odom_frame" value="odom"/>
-    <param name="map_update_interval" value="0.1" />
-    <param name="delta" value="$(eval arg('radius')*2)" />
-    <param name="particles" value="1" />
-  </node>
 
   <node name="RVIZ" pkg="rviz" type="rviz" args=" -d $(find vacuumcleaner)/config/config.rviz" />
   <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -model vacuumcleaner -x -2.0 -y -0.5 -z 0 -R 0.0 -P 0.0 -Y 0.0" />
