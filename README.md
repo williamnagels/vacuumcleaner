@@ -2,7 +2,7 @@
 autonomous SLAM differential drive Lidar vacuum cleaner
 
 ## SLAM
-SLAM is provided by gmapping ROS node. The gmapping node is currently configured to require stable odometry. This is provided
+SLAM is provided by the gmapping ROS node. The gmapping node is currently configured to require stable odometry. This is provided
 by the differential drive implementation:
 * Simulation: ros differential drive plugin
 * Physical robot: TODO
