@@ -72,8 +72,10 @@ public:
     std::unique_lock<std::mutex> lock(signal_mutex);
     while(true)
     {
-       _new_map_notification.wait(lock);
-       _map.ActionThreadSafe([](nav_msgs::OccupancyGrid::ConstPtr Map){ROS_INFO_STREAM("doing threadsafe action");});
+      //can be called even if no map was received yet by subscriber.
+      _map.ActionThreadSafe([](nav_msgs::OccupancyGrid::ConstPtr Map){ROS_INFO_STREAM("doing threadsafe action");}); 
+
+      _new_map_notification.wait(lock);
     }
   }
 };
