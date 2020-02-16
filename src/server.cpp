@@ -1,5 +1,4 @@
-#include <mutex>
-#include <condition_variable>
+#include <thread>
 #include <ros/ros.h>
 #include <actionlib/server/simple_action_server.h>
 #include <vacuumcleaner/cleaningAction.h>
@@ -13,38 +12,11 @@ private:
   vacuumcleaner::cleaningFeedback _feedback;
   ros::Subscriber _map_subscriber; ///< Will subscribe to gmappping map updates.
   vacuumcleaner::cleaningGoalConstPtr _goal; ///< received goal from actionlib client
-
-  struct ThreadSafeOccupancyGrid
-  {
-  private:
-    nav_msgs::OccupancyGrid::ConstPtr _map;  
-    std::mutex _mutex; 
-  public:
-
-   void ActionThreadSafe(std::function<void(nav_msgs::OccupancyGrid::ConstPtr)> Action)
-   {
-     std::lock_guard<std::mutex> lock(_mutex);
-     if (not _map)
-     { 
-       return;
-     }
-
-     return Action(_map);
-   } 
-   void UpdateThreadSafe(nav_msgs::OccupancyGrid::ConstPtr map_to_set) 
-   { 
-     std::lock_guard<std::mutex> lock(_mutex);
-     _map = map_to_set;
-     ROS_INFO_STREAM("Updating map threadsafe");
-   } 
-  };
-
-  ThreadSafeOccupancyGrid _map; ///< Actionlibserver runs in a different thread than callbacks are called on
-  std::condition_variable _new_map_notification; ///< called whenever subscriber receives a new map from gmapping. Will wake action server thread.
+  nav_msgs::OccupancyGrid::ConstPtr _map;  
 public:
 
   CleaningAction(std::string const& name) :
-    _action_server(_node_handle, name, [this](vacuumcleaner::cleaningGoalConstPtr ptr){this->OnGoal(ptr);},false),
+    _action_server(_node_handle, name,false),
     _action_name(name)
   {
     std::string map_topic;
@@ -55,28 +27,22 @@ public:
     }
 
     _map_subscriber = _node_handle.subscribe(map_topic, 1000, &CleaningAction::OnMap, this);
+    _action_server.registerGoalCallback([](){ROS_INFO_STREAM("goal callback: "<<std::this_thread::get_id());});
+    //_action_server.registerPreemptCallback(boost::bind(&AveragingAction::preemptCB, this));
+
     _action_server.start();
   }
 
   void OnMap(nav_msgs::OccupancyGrid::ConstPtr const& new_map)
   { 
-    _map.UpdateThreadSafe(new_map);
-    _new_map_notification.notify_one();
+    ROS_INFO_STREAM("OnMap: "<<std::this_thread::get_id()); 
+    _map = new_map;
   }
 
- // This runs on simple actionlib thread
   void OnGoal(vacuumcleaner::cleaningGoalConstPtr goal)
   {
-    _goal = goal;
-    std::mutex signal_mutex;
-    std::unique_lock<std::mutex> lock(signal_mutex);
-    while(true)
-    {
-      //can be called even if no map was received yet by subscriber.
-      _map.ActionThreadSafe([](nav_msgs::OccupancyGrid::ConstPtr Map){ROS_INFO_STREAM("doing threadsafe action");}); 
-
-      _new_map_notification.wait(lock);
-    }
+    ROS_INFO_STREAM("OnGoal: "<<std::this_thread::get_id()); 
+    _goal = _action_server.acceptNewGoal();
   }
 };
 
