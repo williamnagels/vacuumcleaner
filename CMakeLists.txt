@@ -5,6 +5,8 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   actionlib
   actionlib_msgs
+  tf2
+  tf
 )
 find_package(Boost REQUIRED COMPONENTS system)
 
