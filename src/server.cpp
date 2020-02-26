@@ -14,10 +14,12 @@ private:
   ros::Subscriber _map_subscriber; ///< Will subscribe to gmappping map updates.
   vacuumcleaner::cleaningGoalConstPtr _goal; ///< received goal from actionlib client
   nav_msgs::OccupancyGrid::ConstPtr _map;
-  uint64_t _map_x = 0;
-  uint64_t _map_y = 0;
+  double _map_x = 0;
+  double _map_y = 0;
   tf2_ros::Buffer _tf_buffer;
   tf2_ros::TransformListener _tf_listener;
+
+  const uint64_t RADIUS = 7;
 public:
 
   CleaningAction(std::string const& name) :
@@ -39,20 +41,59 @@ public:
 
   int8_t GetXY(nav_msgs::OccupancyGrid::ConstPtr const& map, uint64_t x, uint64_t y)
   {
-    return map->data[map->info.width * x + y];
+    if (actual_x < 0 or actual_y < 0)
+    {
+      return -1;
+    }
+
+    if (actual_x > map->info.width or actual_y > map->info.height)
+    {
+      return -1;
+    }
+     return map->data[map->info.width * x + y];
+  }
+  int8_t GetRelative(int64_t x, int64_t y)
+  {
+    // current map tile
+    uint64_t grid_x = (uint64_t)((_map_x - _map->info.origin.position.x) / _map->info.resolution);
+    uint64_t grid_y = (uint64_t)((_map_y - _map->info.origin.position.y) / _map->info.resolution);
+     
+    int64_t actual_x = grid_x - x;
+    int64_t actual_y = grid_y - y;
+
+  }
+  int8_t Get(int64_t x, int64_t y)
+  {
+    // current map tile
+    uint64_t grid_x = (uint64_t)((_map_x - _map->info.origin.position.x) / _map->info.resolution);
+    uint64_t grid_y = (uint64_t)((_map_y - _map->info.origin.position.y) / _map->info.resolution);
+    
+    //transform from relative coords to _map coordinates
+    //(0,0) is upper left corner.
+    int64_t actual_x = x - RADIUS/2 -1;
+    int64_t actual_y = y - RADIUS/2 -1;
+    
+  
+
+    return GETXY(_map, grid_x+x, gird_y+y);
   }
   void OnMap(nav_msgs::OccupancyGrid::ConstPtr const& new_map)
   { 
     _map = new_map;
     ROS_INFO_STREAM("OnMap: "<<new_map->info); 
     ROS_INFO_STREAM("GETXY: "<<GetXY(new_map, 0 , 0));
-    geometry_msgs::TransformStamped transform;
+    geometry_msgs::TransformStamped map_transform;
     try
     {
-      transform = _tf_buffer.lookupTransform("map", "base_footprint", ros::Time(0));
-      ROS_INFO_STREAM("TRANSFORM: "<< transform); 
-      uint64_t grid_x = (uint64_t)((_map_x - _map->info.origin.position.x) / _map->info.resolution);
-      uint64_t grid_y = (uint64_t)((_map_y - _map->info.origin.position.y) / _map->info.resolution);
+      map_transform = _tf_buffer.lookupTransform("map", "base_footprint", ros::Time(0));
+      ROS_INFO_STREAM("TRANSFORM: "<< map_transform); 
+      _map_x = map_transform.transform.translation.x;
+      _map_y = map_transform.transform.translation.y;
+     ROS_INFO_STREAM("map.info.x: "<< _map->info.origin.position.x << " map.info.y: "<< _map->info.origin.position.y); 
+      ROS_INFO_STREAM("_map_x: "<< _map_x << " _map_y: "<< _map_y); 
+      ROS_INFO_STREAM("grid_x: "<< grid_x << " grid_y: "<<grid_y); 
+
+
     }
     catch (tf2::TransformException &ex) 
     {
