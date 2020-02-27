@@ -12,6 +12,8 @@ private:
   std::string _action_name;
   vacuumcleaner::cleaningFeedback _feedback;
   ros::Subscriber _map_subscriber; ///< Will subscribe to gmappping map updates.
+  ros::Timer _timer;  
+ 
   vacuumcleaner::cleaningGoalConstPtr _goal; ///< received goal from actionlib client
   nav_msgs::OccupancyGrid::ConstPtr _map;
   double _map_x = 0;
@@ -35,18 +37,21 @@ public:
     }
 
     _map_subscriber = _node_handle.subscribe(map_topic, 1000, &CleaningAction::OnMap, this);
+    _timer = _node_handle.createTimer(ros::Duration(1.0), [this](ros::TimerEvent const& Timer){
+		    this->OnTick(Timer);
+		    });
     _action_server.registerGoalCallback([](){ROS_INFO_STREAM("goal callback: "<<std::this_thread::get_id());});
     _action_server.start();
   }
 
-  int8_t GetXY(nav_msgs::OccupancyGrid::ConstPtr const& map, uint64_t x, uint64_t y)
+  int8_t GetXY(nav_msgs::OccupancyGrid::ConstPtr const& map, int64_t x, int64_t y)
   {
-    if (actual_x < 0 or actual_y < 0)
+    if (x < 0 or y < 0)
     {
       return -1;
     }
 
-    if (actual_x > map->info.width or actual_y > map->info.height)
+    if (x > map->info.width or y > map->info.height)
     {
       return -1;
     }
@@ -61,6 +66,7 @@ public:
     int64_t actual_x = grid_x - x;
     int64_t actual_y = grid_y - y;
 
+    return GetXY(_map, actual_x, actual_y);
   }
   int8_t Get(int64_t x, int64_t y)
   {
@@ -70,18 +76,24 @@ public:
     
     //transform from relative coords to _map coordinates
     //(0,0) is upper left corner.
-    int64_t actual_x = x - RADIUS/2 -1;
-    int64_t actual_y = y - RADIUS/2 -1;
+    int64_t actual_x = grid_x + x - RADIUS/2 -1;
+    int64_t actual_y = grid_y + y - RADIUS/2 -1;
     
-  
+    return GetXY(_map, actual_x, actual_y);
+  }
+  void OnTick(ros::TimerEvent const& Timer)
+  {
+    ROS_INFO_STREAM("START");
+    ROS_INFO_STREAM("[" << static_cast<int32_t>(GetRelative(-1, -1)) << ","<<static_cast<int32_t>(GetRelative(0, -1))<< ","<<static_cast<int32_t>(GetRelative(1, -1))<<"]"); 
+    ROS_INFO_STREAM("[" << static_cast<int32_t>(GetRelative(-1, 0)) << ","<<static_cast<int32_t>(GetRelative(0, 0))<< ","<<static_cast<int32_t>(GetRelative(1, 0))<<"]"); 
+    ROS_INFO_STREAM("[" << static_cast<int32_t>(GetRelative(-1, 1)) << ","<<static_cast<int32_t>(GetRelative(0, 1))<< ","<<static_cast<int32_t>(GetRelative(1, -1))<<"]"); 
+    ROS_INFO_STREAM("END");
 
-    return GETXY(_map, grid_x+x, gird_y+y);
   }
   void OnMap(nav_msgs::OccupancyGrid::ConstPtr const& new_map)
   { 
     _map = new_map;
     ROS_INFO_STREAM("OnMap: "<<new_map->info); 
-    ROS_INFO_STREAM("GETXY: "<<GetXY(new_map, 0 , 0));
     geometry_msgs::TransformStamped map_transform;
     try
     {
@@ -89,11 +101,8 @@ public:
       ROS_INFO_STREAM("TRANSFORM: "<< map_transform); 
       _map_x = map_transform.transform.translation.x;
       _map_y = map_transform.transform.translation.y;
-     ROS_INFO_STREAM("map.info.x: "<< _map->info.origin.position.x << " map.info.y: "<< _map->info.origin.position.y); 
+      ROS_INFO_STREAM("map.info.x: "<< _map->info.origin.position.x << " map.info.y: "<< _map->info.origin.position.y); 
       ROS_INFO_STREAM("_map_x: "<< _map_x << " _map_y: "<< _map_y); 
-      ROS_INFO_STREAM("grid_x: "<< grid_x << " grid_y: "<<grid_y); 
-
-
     }
     catch (tf2::TransformException &ex) 
     {
