@@ -44,6 +44,10 @@ public:
     _action_server.start();
   }
 
+  /*
+   * x = up
+   * y = down
+   */
   int8_t GetXY(nav_msgs::OccupancyGrid::ConstPtr const& map, int64_t x, int64_t y)
   {
     if (x < 0 or y < 0)
@@ -51,20 +55,29 @@ public:
       return -1;
     }
 
-    if (x > map->info.width or y > map->info.height)
+    if (x > map->info.height or y > map->info.width)
     {
       return -1;
     }
-     return map->data[map->info.width * x + y];
+
+    //ROS_INFO_STREAM("accessing: [" << (map->info.width * y + x)<<"]"); 
+    return map->data[map->info.width * y + x];
   }
+
+  /*
+   * x = up
+   * y = down
+   */
   int8_t GetRelative(int64_t x, int64_t y)
   {
     // current map tile
     uint64_t grid_x = (uint64_t)((_map_x - _map->info.origin.position.x) / _map->info.resolution);
     uint64_t grid_y = (uint64_t)((_map_y - _map->info.origin.position.y) / _map->info.resolution);
      
-    int64_t actual_x = grid_x - x;
-    int64_t actual_y = grid_y - y;
+    //ROS_INFO_STREAM("current: "<< _map_x<<", "<< _map_y);
+    //ROS_INFO_STREAM("grid: "<< grid_x<<", "<< grid_y);
+    int64_t actual_x = grid_x + x;
+    int64_t actual_y = grid_y + y;
 
     return GetXY(_map, actual_x, actual_y);
   }
@@ -83,17 +96,6 @@ public:
   }
   void OnTick(ros::TimerEvent const& Timer)
   {
-    ROS_INFO_STREAM("START");
-    ROS_INFO_STREAM("[" << static_cast<int32_t>(GetRelative(-1, -1)) << ","<<static_cast<int32_t>(GetRelative(0, -1))<< ","<<static_cast<int32_t>(GetRelative(1, -1))<<"]"); 
-    ROS_INFO_STREAM("[" << static_cast<int32_t>(GetRelative(-1, 0)) << ","<<static_cast<int32_t>(GetRelative(0, 0))<< ","<<static_cast<int32_t>(GetRelative(1, 0))<<"]"); 
-    ROS_INFO_STREAM("[" << static_cast<int32_t>(GetRelative(-1, 1)) << ","<<static_cast<int32_t>(GetRelative(0, 1))<< ","<<static_cast<int32_t>(GetRelative(1, -1))<<"]"); 
-    ROS_INFO_STREAM("END");
-
-  }
-  void OnMap(nav_msgs::OccupancyGrid::ConstPtr const& new_map)
-  { 
-    _map = new_map;
-    ROS_INFO_STREAM("OnMap: "<<new_map->info); 
     geometry_msgs::TransformStamped map_transform;
     try
     {
@@ -109,6 +111,18 @@ public:
       ROS_WARN("%s",ex.what());
       ros::Duration(1.0).sleep();
     }
+    ROS_INFO_STREAM("START");
+    ROS_INFO_STREAM("[" << static_cast<int32_t>(GetRelative(-1, 1)) << ","<<static_cast<int32_t>(GetRelative(0, 1))<< ","<<static_cast<int32_t>(GetRelative(1, 1))<<"]"); 
+    ROS_INFO_STREAM("[" << static_cast<int32_t>(GetRelative(-1, 0)) << ","<<static_cast<int32_t>(GetRelative(0, 0))<< ","<<static_cast<int32_t>(GetRelative(0, 0))<<"]"); 
+    ROS_INFO_STREAM("[" << static_cast<int32_t>(GetRelative(-1, -1)) << ","<<static_cast<int32_t>(GetRelative(0, -1))<< ","<<static_cast<int32_t>(GetRelative(1, -1))<<"]");    
+    ROS_INFO_STREAM("END");
+    //ROS_INFO_STREAM("choppa: "<< static_cast<int32_t>(GetRelative(0,0)));
+
+  }
+  void OnMap(nav_msgs::OccupancyGrid::ConstPtr const& new_map)
+  { 
+    _map = new_map;
+    ROS_INFO_STREAM("OnMap: "<<new_map->info); 
   }
 
   void OnGoal(vacuumcleaner::cleaningGoalConstPtr goal)
