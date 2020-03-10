@@ -3,11 +3,7 @@ Panels:
     Help Height: 78
     Name: Displays
     Property Tree Widget:
-      Expanded:
-        - /Polygon1
-        - /Path1
-        - /Path2
-        - /Path3
+      Expanded: ~
       Splitter Ratio: 0.5423280000686646
     Tree Height: 720
   - Class: rviz/Selection
@@ -28,7 +24,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: PointCloud2
+    SyncSource: LaserScan
 Preferences:
   PromptSaveOnExit: true
 Toolbars:
@@ -36,8 +32,8 @@ Toolbars:
 Visualization Manager:
   Class: ""
   Displays:
-    - Alpha: 0.5
-      Cell Size: 1
+    - Alpha: 1
+      Cell Size: 0.20000000298023224
       Class: rviz/Grid
       Color: 160; 160; 164
       Enabled: true
@@ -70,6 +66,11 @@ Visualization Manager:
           Show Trail: false
           Value: true
         base_scan:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        caster_wheel:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -139,9 +140,7 @@ Visualization Manager:
           Value: true
         base_scan:
           Value: true
-        link_left_wheel:
-          Value: true
-        link_right_wheel:
+        caster_wheel:
           Value: true
         map:
           Value: true
@@ -158,9 +157,7 @@ Visualization Manager:
             base_footprint:
               base_scan:
                 {}
-              link_left_wheel:
-                {}
-              link_right_wheel:
+              caster_wheel:
                 {}
       Update Interval: 0
       Value: true
@@ -338,7 +335,7 @@ Visualization Manager:
   Value: true
   Views:
     Current:
-      Angle: -0.6449999809265137
+      Angle: 0
       Class: rviz/TopDownOrtho
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
@@ -351,8 +348,8 @@ Visualization Manager:
       Scale: 184.5111083984375
       Target Frame: base_link
       Value: TopDownOrtho (rviz)
-      X: 0.5100298523902893
-      Y: 0.33076727390289307
+      X: -0.8877549171447754
+      Y: -0.2714075744152069
     Saved: ~
 Window Geometry:
   Displays:
