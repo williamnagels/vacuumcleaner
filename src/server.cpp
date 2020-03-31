@@ -96,6 +96,10 @@ public:
   }
   void OnTick(ros::TimerEvent const& Timer)
   {
+    if (not _map)
+    { 
+      return;
+    }
     geometry_msgs::TransformStamped map_transform;
     try
     {

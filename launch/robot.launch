@@ -9,21 +9,25 @@
 
   <node pkg="vacuumcleaner" name="server" type="server" output="screen"/>
   <node pkg="vacuumcleaner" name="client" type="client" output="screen"/>
+
+
   <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" ns="vacuumcleaner">
     <param name="publish_frequency" type="double" value="30.0" />
   </node>
 
   <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
     <rosparam file="$(find vacuumcleaner)/config/costmap_common_params.yaml" command="load" ns="global_costmap" />
-    <rosparam file="$(find vacuumcleaner)/config/costmap_common_params.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find vacuumcleaner)/config/costmap_common_params.yaml" command="load" ns="local_costmap"/>
     <rosparam file="$(find vacuumcleaner)/config/local_costmap_params.yaml" command="load" />
     <rosparam file="$(find vacuumcleaner)/config/global_costmap_params.yaml" command="load" />
     <rosparam file="$(find vacuumcleaner)/config/base_local_planner_params.yaml" command="load" />
-    <param name="global_costmap/resolution" value="0.05"/>
-    <param name="local_costmap/resolution" value="0.05"/>
+    <param name="global_costmap/resolution" value="0.01"/>
+    <param name="local_costmap/resolution" value="0.01"/>
     <param name="global_costmap/robot_radius" value="$(eval arg('radius'))"/>
     <param name="local_costmap/robot_radius" value="$(eval arg('radius'))"/>
-  </node>
+    <param name="local_costmap/width" value="$(eval 5*arg('radius'))"/>
+    <param name="local_costmap/height" value="$(eval 5*arg('radius'))"/>
+    </node>
 
   <node pkg="gmapping" type="slam_gmapping" name="gmapping_thing" output="screen">
     <param name="base_frame" value="base_footprint"/>
