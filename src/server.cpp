@@ -24,7 +24,7 @@ private:
   double _map_y = 0;
   tf2_ros::Buffer _tf_buffer;
   tf2_ros::TransformListener _tf_listener;
-
+  bool _sent_message = false;
   const uint64_t RADIUS = 7;
 public:
 
@@ -32,7 +32,7 @@ public:
     _action_server(_node_handle, name,false),
     _action_name(name),
     _tf_listener(_tf_buffer),
-    _move_base_client("move_base", false)
+    _move_base_client("move_base", true)
   {
     std::string map_topic("map");
     if (not _node_handle.getParam("map_topic", map_topic))
@@ -117,17 +117,21 @@ public:
       //ROS_INFO_STREAM("_map_x: "<< _map_x << " _map_y: "<< _map_y); 
       //
       //
-      move_base_msgs::MoveBaseGoal goal;
-      //we'll send a goal to the robot to move 1 meter forward
-      goal.target_pose.header.frame_id = "base_footprint";
-      goal.target_pose.header.stamp = ros::Time::now();
+      if (not _sent_message)
+      {
+        ROS_INFO("Sending goal");
+        _sent_message = true;
+        move_base_msgs::MoveBaseGoal goal;
+        goal.target_pose.header.frame_id = "map";
+        goal.target_pose.header.stamp = ros::Time::now();
  
-      goal.target_pose.pose.position.x = 1.0;
-      goal.target_pose.pose.orientation.w = 1.0;
+        goal.target_pose.pose.position.x = _map_x + 2.0;
+        goal.target_pose.pose.position.y = _map_y;
+        goal.target_pose.pose.orientation.w = 1.0;
   
-      ROS_INFO("Sending goal");
-      _move_base_client.sendGoal(goal, [this](auto const& a, auto const& b){this->OnMoveGoalCompletion(a, b);});
-    }
+        _move_base_client.sendGoal(goal, [this](auto const& a, auto const& b){this->OnMoveGoalCompletion(a, b);});
+       }
+   }
     catch (tf2::TransformException &ex) 
     {
       ROS_WARN("%s",ex.what());
