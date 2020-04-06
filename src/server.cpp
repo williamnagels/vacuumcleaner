@@ -19,7 +19,7 @@ private:
   ros::Timer _timer;  
   MoveBaseClient _move_base_client;
   vacuumcleaner::cleaningGoalConstPtr _goal; ///< received goal from actionlib client
-  nav_msgs::OccupancyGrid::ConstPtr _map;
+  nav_msgs::OccupancyGrid _local_map;
   double _map_x = 0;
   double _map_y = 0;
   tf2_ros::Buffer _tf_buffer;
@@ -53,20 +53,20 @@ public:
    * x = up
    * y = down
    */
-  int8_t GetXY(nav_msgs::OccupancyGrid::ConstPtr const& map, int64_t x, int64_t y)
+  int8_t GetXY(int64_t x, int64_t y)
   {
     if (x < 0 or y < 0)
     {
       return -1;
     }
 
-    if (x > map->info.height or y > map->info.width)
+    if (x > _local_map.info.height or y > _local_map.info.width)
     {
       return -1;
     }
 
     //ROS_INFO_STREAM("accessing: [" << (map->info.width * y + x)<<"]"); 
-    return map->data[map->info.width * y + x];
+    return _local_map.data[_local_map.info.width * y + x];
   }
 
   /*
@@ -76,28 +76,28 @@ public:
   int8_t GetRelative(int64_t x, int64_t y)
   {
     // current map tile
-    uint64_t grid_x = (uint64_t)((_map_x - _map->info.origin.position.x) / _map->info.resolution);
-    uint64_t grid_y = (uint64_t)((_map_y - _map->info.origin.position.y) / _map->info.resolution);
+    uint64_t grid_x = (uint64_t)((_map_x - _local_map.info.origin.position.x) / _local_map.info.resolution);
+    uint64_t grid_y = (uint64_t)((_map_y - _local_map.info.origin.position.y) / _local_map.info.resolution);
      
     //ROS_INFO_STREAM("current: "<< _map_x<<", "<< _map_y);
     //ROS_INFO_STREAM("grid: "<< grid_x<<", "<< grid_y);
     int64_t actual_x = grid_x + x;
     int64_t actual_y = grid_y + y;
 
-    return GetXY(_map, actual_x, actual_y);
+    return GetXY(actual_x, actual_y);
   }
   int8_t Get(int64_t x, int64_t y)
   {
     // current map tile
-    uint64_t grid_x = (uint64_t)((_map_x - _map->info.origin.position.x) / _map->info.resolution);
-    uint64_t grid_y = (uint64_t)((_map_y - _map->info.origin.position.y) / _map->info.resolution);
+    uint64_t grid_x = (uint64_t)((_map_x - _local_map.info.origin.position.x) / _local_map.info.resolution);
+    uint64_t grid_y = (uint64_t)((_map_y - _local_map.info.origin.position.y) / _local_map.info.resolution);
     
     //transform from relative coords to _map coordinates
     //(0,0) is upper left corner.
     int64_t actual_x = grid_x + x - RADIUS/2 -1;
     int64_t actual_y = grid_y + y - RADIUS/2 -1;
     
-    return GetXY(_map, actual_x, actual_y);
+    return GetXY(actual_x, actual_y);
   }
   void OnMoveGoalCompletion(const actionlib::SimpleClientGoalState& state,  const move_base_msgs::MoveBaseResultConstPtr& result) 
   {
@@ -147,7 +147,24 @@ public:
   }
   void OnMap(nav_msgs::OccupancyGrid::ConstPtr const& new_map)
   { 
-    _map = new_map;
+    ROS_INFO_STREAM("printing value "<<_local_map.info.width);
+
+    if (_local_map.info.width != new_map->info.width or _local_map.info.height != new_map->info.height)
+    {
+      ROS_INFO_STREAM("Received uncompatible map. Resetting map.");
+      _local_map = *new_map;
+    }
+    else
+    {
+      ROS_INFO_STREAM("Updating local map with new data.");
+      for (int i = 0; i < _local_map.info.width * _local_map.info.height; i++)
+      {
+        if (_local_map.data[i] < new_map->data[i])
+	{
+	  _local_map.data[i] = new_map->data[i];
+	}
+      }
+    }
     
     if (not _timer.isValid())
     {
