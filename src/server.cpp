@@ -16,16 +16,24 @@ private:
   std::string _action_name;
   vacuumcleaner::cleaningFeedback _feedback;
   ros::Subscriber _map_subscriber; ///< Will subscribe to gmappping map updates.
-  ros::Timer _timer;  
-  MoveBaseClient _move_base_client;
+  MoveBaseClient _move_base_client; ///< Will be used to send position goals
   vacuumcleaner::cleaningGoalConstPtr _goal; ///< received goal from actionlib client
-  nav_msgs::OccupancyGrid _local_map;
-  double _map_x = 0;
-  double _map_y = 0;
+  nav_msgs::OccupancyGrid _local_map; ///< Map from SLAM node updated with visited cells
+  double _map_x = 0; //< x position in the map frame of robot
+  double _map_y = 0; //< y position in the map frame of robot
   tf2_ros::Buffer _tf_buffer;
   tf2_ros::TransformListener _tf_listener;
-  bool _sent_message = false;
   const uint64_t RADIUS = 7;
+  struct Direction
+  {
+    int8_t x = 0;
+    int8_t y = 0;
+    bool IsSet()
+    {
+      return x != 0 and y != 0;
+    }
+  };
+  Direction _direction; //< Direction robot is currently heading to
 public:
 
   CleaningAction(std::string const& name) :
@@ -101,50 +109,50 @@ public:
   }
   void OnMoveGoalCompletion(const actionlib::SimpleClientGoalState& state,  const move_base_msgs::MoveBaseResultConstPtr& result) 
   {
-    //ROS_INFO_STREAM("State: "<< state); 
     ROS_INFO_STREAM("Result"<< result); 
+    SetDirection();
   }
-  void OnTick(ros::TimerEvent const& Timer)
+
+  void SetDirection()
   {
+
+
     geometry_msgs::TransformStamped map_transform;
     try
     {
       map_transform = _tf_buffer.lookupTransform("map", "base_footprint", ros::Time(0));
-      //ROS_INFO_STREAM("TRANSFORM: "<< map_transform); 
       _map_x = map_transform.transform.translation.x;
       _map_y = map_transform.transform.translation.y;
-      //ROS_INFO_STREAM("map.info.x: "<< _map->info.origin.position.x << " map.info.y: "<< _map->info.origin.position.y); 
-      //ROS_INFO_STREAM("_map_x: "<< _map_x << " _map_y: "<< _map_y); 
-      //
-      //
-      if (not _sent_message)
-      {
-        ROS_INFO("Sending goal");
-        _sent_message = true;
-        move_base_msgs::MoveBaseGoal goal;
-        goal.target_pose.header.frame_id = "map";
-        goal.target_pose.header.stamp = ros::Time::now();
- 
-        goal.target_pose.pose.position.x = _map_x + 2.0;
-        goal.target_pose.pose.position.y = _map_y;
-        goal.target_pose.pose.orientation.w = 1.0;
-  
-        _move_base_client.sendGoal(goal, [this](auto const& a, auto const& b){this->OnMoveGoalCompletion(a, b);});
-       }
-   }
+     }
     catch (tf2::TransformException &ex) 
     {
       ROS_WARN("%s",ex.what());
-      ros::Duration(1.0).sleep();
     }
-    //ROS_INFO_STREAM("START");
-    //ROS_INFO_STREAM("[" << static_cast<int32_t>(GetRelative(-1, 1)) << ","<<static_cast<int32_t>(GetRelative(0, 1))<< ","<<static_cast<int32_t>(GetRelative(1, 1))<<"]"); 
-    //ROS_INFO_STREAM("[" << static_cast<int32_t>(GetRelative(-1, 0)) << ","<<static_cast<int32_t>(GetRelative(0, 0))<< ","<<static_cast<int32_t>(GetRelative(0, 0))<<"]"); 
-    //ROS_INFO_STREAM("[" << static_cast<int32_t>(GetRelative(-1, -1)) << ","<<static_cast<int32_t>(GetRelative(0, -1))<< ","<<static_cast<int32_t>(GetRelative(1, -1))<<"]");    
-    //ROS_INFO_STREAM("END");
-    //ROS_INFO_STREAM("choppa: "<< static_cast<int32_t>(GetRelative(0,0)));
+ 
 
+//    ROS_INFO_STREAM("START");
+//    ROS_INFO_STREAM("[" << static_cast<int32_t>(GetRelative(-1, 1)) << ","<<static_cast<int32_t>(GetRelative(0, 1))<< ","<<static_cast<int32_t>(GetRelative(1, 1))<<"]"); 
+//    ROS_INFO_STREAM("[" << static_cast<int32_t>(GetRelative(-1, 0)) << ","<<static_cast<int32_t>(GetRelative(0, 0))<< ","<<static_cast<int32_t>(GetRelative(1, 0))<<"]"); 
+//    ROS_INFO_STREAM("[" << static_cast<int32_t>(GetRelative(-1, -1)) << ","<<static_cast<int32_t>(GetRelative(0, -1))<< ","<<static_cast<int32_t>(GetRelative(1, -1))<<"]");    
+//    ROS_INFO_STREAM("END");
+    //ROS_INFO_STREAM("choppa: "<< static_cast<int32_t>(GetRelative(0,0)));
+    //    
+    _direction.x = 1;
+    _direction.y = 0;
+    float translation_x = _direction.x * _local_map.info.resolution;
+    float translation_y = _direction.y * _local_map.info.resolution;
+    //ROS_INFO_STREAM("Current position in map frame: ("<<_map_x<<","<<_map_y<<")"); 
+    move_base_msgs::MoveBaseGoal goal;
+    goal.target_pose.header.frame_id = "map";
+    goal.target_pose.header.stamp = ros::Time::now();
+    goal.target_pose.pose.position.x = _map_x + translation_x;
+    goal.target_pose.pose.position.y = _map_y + translation_y;
+    goal.target_pose.pose.orientation.w = 1.0;
+    //ROS_INFO_STREAM(goal); 
+    _move_base_client.sendGoal(goal, [this](auto const& a, auto const& b){this->OnMoveGoalCompletion(a, b);});
+ 
   }
+
   void OnMap(nav_msgs::OccupancyGrid::ConstPtr const& new_map)
   { 
     ROS_INFO_STREAM("printing value "<<_local_map.info.width);
@@ -165,13 +173,13 @@ public:
 	}
       }
     }
-    
-    if (not _timer.isValid())
-    {
-      _timer = _node_handle.createTimer(ros::Duration(1.0), [this](ros::TimerEvent const& Timer){ this->OnTick(Timer); });
-    }
 
-    //ROS_INFO_STREAM("OnMap: "<<new_map->info); 
+    if (not _direction.IsSet())
+    {
+      SetDirection();
+    }
+    
+   //ROS_INFO_STREAM("OnMap: "<<new_map->info); 
   }
 
   void OnGoal(vacuumcleaner::cleaningGoalConstPtr goal)
