@@ -12,17 +12,17 @@ class CleaningAction
 {
 private:
   ros::NodeHandle _node_handle;
-  actionlib::SimpleActionServer<vacuumcleaner::cleaningAction> _action_server;
-  std::string _action_name;
-  vacuumcleaner::cleaningFeedback _feedback;
   ros::Subscriber _map_subscriber; ///< Will subscribe to gmappping map updates.
-  MoveBaseClient _move_base_client; ///< Will be used to send position goals
-  vacuumcleaner::cleaningGoalConstPtr _goal; ///< received goal from actionlib client
+  //vacuumcleaner::cleaningGoalConstPtr _goal; ///< received goal from actionlib client
   nav_msgs::OccupancyGrid _local_map; ///< Map from SLAM node updated with visited cells
   double _map_x = 0; //< x position in the map frame of robot
   double _map_y = 0; //< y position in the map frame of robot
   tf2_ros::Buffer _tf_buffer;
+  actionlib::SimpleActionServer<vacuumcleaner::cleaningAction> _action_server;
+  std::string _action_name;
+  vacuumcleaner::cleaningFeedback _feedback;
   tf2_ros::TransformListener _tf_listener;
+  MoveBaseClient _move_base_client; ///< Will be used to send position goals
   const uint64_t RADIUS = 7;
   struct Direction
   {
@@ -107,56 +107,55 @@ public:
     
     return GetXY(actual_x, actual_y);
   }
-  void OnMoveGoalCompletion(const actionlib::SimpleClientGoalState& state,  const move_base_msgs::MoveBaseResultConstPtr& result) 
+  void OnMoveGoalCompletion(const actionlib::SimpleClientGoalState& /*state*/,  const move_base_msgs::MoveBaseResultConstPtr& result) 
   {
     ROS_INFO_STREAM("Result"<< result); 
-    SetDirection();
   }
 
-  void SetDirection()
-  {
-
-
-    geometry_msgs::TransformStamped map_transform;
-    try
-    {
-      map_transform = _tf_buffer.lookupTransform("map", "base_footprint", ros::Time(0));
-      _map_x = map_transform.transform.translation.x;
-      _map_y = map_transform.transform.translation.y;
-     }
-    catch (tf2::TransformException &ex) 
-    {
-      ROS_WARN("%s",ex.what());
-    }
- 
-
-//    ROS_INFO_STREAM("START");
-//    ROS_INFO_STREAM("[" << static_cast<int32_t>(GetRelative(-1, 1)) << ","<<static_cast<int32_t>(GetRelative(0, 1))<< ","<<static_cast<int32_t>(GetRelative(1, 1))<<"]"); 
-//    ROS_INFO_STREAM("[" << static_cast<int32_t>(GetRelative(-1, 0)) << ","<<static_cast<int32_t>(GetRelative(0, 0))<< ","<<static_cast<int32_t>(GetRelative(1, 0))<<"]"); 
-//    ROS_INFO_STREAM("[" << static_cast<int32_t>(GetRelative(-1, -1)) << ","<<static_cast<int32_t>(GetRelative(0, -1))<< ","<<static_cast<int32_t>(GetRelative(1, -1))<<"]");    
-//    ROS_INFO_STREAM("END");
-    //ROS_INFO_STREAM("choppa: "<< static_cast<int32_t>(GetRelative(0,0)));
-    //    
-    _direction.x = 1;
-    _direction.y = 0;
-    float translation_x = _direction.x * _local_map.info.resolution;
-    float translation_y = _direction.y * _local_map.info.resolution;
-    //ROS_INFO_STREAM("Current position in map frame: ("<<_map_x<<","<<_map_y<<")"); 
-    move_base_msgs::MoveBaseGoal goal;
-    goal.target_pose.header.frame_id = "map";
-    goal.target_pose.header.stamp = ros::Time::now();
-    goal.target_pose.pose.position.x = _map_x + translation_x;
-    goal.target_pose.pose.position.y = _map_y + translation_y;
-    goal.target_pose.pose.orientation.w = 1.0;
-    //ROS_INFO_STREAM(goal); 
-    _move_base_client.sendGoal(goal, [this](auto const& a, auto const& b){this->OnMoveGoalCompletion(a, b);});
- 
-  }
+// void SetDirection()
+//  {
+//    geometry_msgs::TransformStamped map_transform;
+//    try
+//    {
+//      map_transform = _tf_buffer.lookupTransform("map", "base_footprint", ros::Time(0));
+//      _map_x = map_transform.transform.translation.x;
+//      _map_y = map_transform.transform.translation.y;
+//     }
+//    catch (tf2::TransformException &ex) 
+//    {
+//      ROS_WARN("%s",ex.what());
+//    }
+// 
+//
+////    ROS_INFO_STREAM("START");
+////    ROS_INFO_STREAM("[" << static_cast<int32_t>(GetRelative(-1, 1)) << ","<<static_cast<int32_t>(GetRelative(0, 1))<< ","<<static_cast<int32_t>(GetRelative(1, 1))<<"]"); 
+////    ROS_INFO_STREAM("[" << static_cast<int32_t>(GetRelative(-1, 0)) << ","<<static_cast<int32_t>(GetRelative(0, 0))<< ","<<static_cast<int32_t>(GetRelative(1, 0))<<"]"); 
+////    ROS_INFO_STREAM("[" << static_cast<int32_t>(GetRelative(-1, -1)) << ","<<static_cast<int32_t>(GetRelative(0, -1))<< ","<<static_cast<int32_t>(GetRelative(1, -1))<<"]");    
+////    ROS_INFO_STREAM("END");
+//    //ROS_INFO_STREAM("choppa: "<< static_cast<int32_t>(GetRelative(0,0)));
+//    //    
+//    _direction = GetNewDirection();
+//    if (_direction.x == 0 and _direction.y == 0)
+//    {
+//      ROS_INFO_STREAM("No possible goal in sight. Do intelligent things here.");  
+//      return;
+//    }
+//    float translation_x = _direction.x * _local_map.info.resolution;
+//    float translation_y = _direction.y * _local_map.info.resolution;
+//    //ROS_INFO_STREAM("Current position in map frame: ("<<_map_x<<","<<_map_y<<")"); 
+//    move_base_msgs::MoveBaseGoal goal;
+//    goal.target_pose.header.frame_id = "map";
+//    goal.target_pose.header.stamp = ros::Time::now();
+//    goal.target_pose.pose.position.x = _map_x + translation_x;
+//    goal.target_pose.pose.position.y = _map_y + translation_y;
+//    goal.target_pose.pose.orientation.w = 1.0;
+//    //ROS_INFO_STREAM(goal); 
+//    _move_base_client.sendGoal(goal, [this](auto const& a, auto const& b){this->OnMoveGoalCompletion(a, b);});
+// 
+//  }
 
   void OnMap(nav_msgs::OccupancyGrid::ConstPtr const& new_map)
   { 
-    ROS_INFO_STREAM("printing value "<<_local_map.info.width);
-
     if (_local_map.info.width != new_map->info.width or _local_map.info.height != new_map->info.height)
     {
       ROS_INFO_STREAM("Received uncompatible map. Resetting map.");
@@ -165,7 +164,10 @@ public:
     else
     {
       ROS_INFO_STREAM("Updating local map with new data.");
-      for (int i = 0; i < _local_map.info.width * _local_map.info.height; i++)
+      
+      //Loop over all cells and figure out if the new map has relevant information
+      //
+      for (uint64_t i = 0; i < _local_map.info.width * _local_map.info.height; i++)
       {
         if (_local_map.data[i] < new_map->data[i])
 	{
@@ -173,19 +175,11 @@ public:
 	}
       }
     }
-
-    if (not _direction.IsSet())
-    {
-      SetDirection();
-    }
-    
-   //ROS_INFO_STREAM("OnMap: "<<new_map->info); 
   }
 
-  void OnGoal(vacuumcleaner::cleaningGoalConstPtr goal)
+  void OnGoal(vacuumcleaner::cleaningGoalConstPtr /*goal*/)
   {
     ROS_INFO_STREAM("OnGoal: "<<std::this_thread::get_id()); 
-    _goal = _action_server.acceptNewGoal();
   }
 };
 

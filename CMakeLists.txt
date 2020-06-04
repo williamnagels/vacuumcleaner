@@ -1,5 +1,12 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(vacuumcleaner)
+
+if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -pipe -fasynchronous-unwind-tables -fstack-protector -fstack-protector-strong -Wall -Wextra -Werror")
+endif()
+
+
+
 find_package(catkin REQUIRED COMPONENTS
   rospy
   std_msgs
@@ -25,7 +32,7 @@ catkin_package(
 
 include_directories(include ${catkin_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
 add_executable(client src/client.cpp)
-
+set_property(TARGET client PROPERTY CXX_STANDARD 17)
 target_link_libraries( 
   client
   ${catkin_LIBRARIES}
@@ -38,6 +45,7 @@ add_dependencies(
 
 add_executable(server src/server.cpp)
 
+set_property(TARGET server PROPERTY CXX_STANDARD 17)
 target_link_libraries(
   server
   ${catkin_LIBRARIES}
