@@ -1,3 +1,4 @@
+#include "map.h"
 #include <thread>
 #include <ros/ros.h>
 #include <move_base_msgs/MoveBaseAction.h>
@@ -12,11 +13,7 @@ class CleaningAction
 {
 private:
   ros::NodeHandle _node_handle;
-  ros::Subscriber _map_subscriber; ///< Will subscribe to gmappping map updates.
   //vacuumcleaner::cleaningGoalConstPtr _goal; ///< received goal from actionlib client
-  nav_msgs::OccupancyGrid _local_map; ///< Map from SLAM node updated with visited cells
-  double _map_x = 0; //< x position in the map frame of robot
-  double _map_y = 0; //< y position in the map frame of robot
   tf2_ros::Buffer _tf_buffer;
   actionlib::SimpleActionServer<vacuumcleaner::cleaningAction> _action_server;
   std::string _action_name;
@@ -24,16 +21,6 @@ private:
   tf2_ros::TransformListener _tf_listener;
   MoveBaseClient _move_base_client; ///< Will be used to send position goals
   const uint64_t RADIUS = 7;
-  struct Direction
-  {
-    int8_t x = 0;
-    int8_t y = 0;
-    bool IsSet()
-    {
-      return x != 0 and y != 0;
-    }
-  };
-  Direction _direction; //< Direction robot is currently heading to
 public:
 
   CleaningAction(std::string const& name) :
@@ -52,7 +39,6 @@ public:
     {
       ROS_INFO("Waiting for the move_base action server to come up");
     }
-    _map_subscriber = _node_handle.subscribe(map_topic, 1000, &CleaningAction::OnMap, this);
     _action_server.registerGoalCallback([](){ROS_INFO_STREAM("goal callback: "<<std::this_thread::get_id());});
     _action_server.start();
   }
@@ -61,52 +47,52 @@ public:
    * x = up
    * y = down
    */
-  int8_t GetXY(int64_t x, int64_t y)
-  {
-    if (x < 0 or y < 0)
-    {
-      return -1;
-    }
-
-    if (x > _local_map.info.height or y > _local_map.info.width)
-    {
-      return -1;
-    }
-
-    //ROS_INFO_STREAM("accessing: [" << (map->info.width * y + x)<<"]"); 
-    return _local_map.data[_local_map.info.width * y + x];
-  }
+//  int8_t GetXY(int64_t x, int64_t y)
+//  {
+//    if (x < 0 or y < 0)
+//    {
+//      return -1;
+//    }
+//
+//    if (x > _local_map.info.height or y > _local_map.info.width)
+//    {
+//      return -1;
+//    }
+//
+//    //ROS_INFO_STREAM("accessing: [" << (map->info.width * y + x)<<"]"); 
+//    return _local_map.data[_local_map.info.width * y + x];
+//  }
 
   /*
    * x = up
    * y = down
    */
-  int8_t GetRelative(int64_t x, int64_t y)
-  {
-    // current map tile
-    uint64_t grid_x = (uint64_t)((_map_x - _local_map.info.origin.position.x) / _local_map.info.resolution);
-    uint64_t grid_y = (uint64_t)((_map_y - _local_map.info.origin.position.y) / _local_map.info.resolution);
-     
-    //ROS_INFO_STREAM("current: "<< _map_x<<", "<< _map_y);
-    //ROS_INFO_STREAM("grid: "<< grid_x<<", "<< grid_y);
-    int64_t actual_x = grid_x + x;
-    int64_t actual_y = grid_y + y;
-
-    return GetXY(actual_x, actual_y);
-  }
-  int8_t Get(int64_t x, int64_t y)
-  {
-    // current map tile
-    uint64_t grid_x = (uint64_t)((_map_x - _local_map.info.origin.position.x) / _local_map.info.resolution);
-    uint64_t grid_y = (uint64_t)((_map_y - _local_map.info.origin.position.y) / _local_map.info.resolution);
-    
-    //transform from relative coords to _map coordinates
-    //(0,0) is upper left corner.
-    int64_t actual_x = grid_x + x - RADIUS/2 -1;
-    int64_t actual_y = grid_y + y - RADIUS/2 -1;
-    
-    return GetXY(actual_x, actual_y);
-  }
+//  int8_t GetRelative(int64_t x, int64_t y)
+//  {
+//    // current map tile
+//    uint64_t grid_x = (uint64_t)((_map_x - _local_map.info.origin.position.x) / _local_map.info.resolution);
+//    uint64_t grid_y = (uint64_t)((_map_y - _local_map.info.origin.position.y) / _local_map.info.resolution);
+//     
+//    //ROS_INFO_STREAM("current: "<< _map_x<<", "<< _map_y);
+//    //ROS_INFO_STREAM("grid: "<< grid_x<<", "<< grid_y);
+//    int64_t actual_x = grid_x + x;
+//    int64_t actual_y = grid_y + y;
+//
+//    return GetXY(actual_x, actual_y);
+//  }
+//  int8_t Get(int64_t x, int64_t y)
+//  {
+//    // current map tile
+//    uint64_t grid_x = (uint64_t)((_map_x - _local_map.info.origin.position.x) / _local_map.info.resolution);
+//    uint64_t grid_y = (uint64_t)((_map_y - _local_map.info.origin.position.y) / _local_map.info.resolution);
+//    
+//    //transform from relative coords to _map coordinates
+//    //(0,0) is upper left corner.
+//    int64_t actual_x = grid_x + x - RADIUS/2 -1;
+//    int64_t actual_y = grid_y + y - RADIUS/2 -1;
+//    
+//    return GetXY(actual_x, actual_y);
+//  }
   void OnMoveGoalCompletion(const actionlib::SimpleClientGoalState& /*state*/,  const move_base_msgs::MoveBaseResultConstPtr& result) 
   {
     ROS_INFO_STREAM("Result"<< result); 
@@ -154,29 +140,29 @@ public:
 // 
 //  }
 
-  void OnMap(nav_msgs::OccupancyGrid::ConstPtr const& new_map)
-  { 
-    if (_local_map.info.width != new_map->info.width or _local_map.info.height != new_map->info.height)
-    {
-      ROS_INFO_STREAM("Received uncompatible map. Resetting map.");
-      _local_map = *new_map;
-    }
-    else
-    {
-      ROS_INFO_STREAM("Updating local map with new data.");
-      
-      //Loop over all cells and figure out if the new map has relevant information
-      //
-      for (uint64_t i = 0; i < _local_map.info.width * _local_map.info.height; i++)
-      {
-        if (_local_map.data[i] < new_map->data[i])
-	{
-	  _local_map.data[i] = new_map->data[i];
-	}
-      }
-    }
-  }
-
+//  void OnMap(nav_msgs::OccupancyGrid::ConstPtr const& new_map)
+//  { 
+//    if (_local_map.info.width != new_map->info.width or _local_map.info.height != new_map->info.height)
+//    {
+//      ROS_INFO_STREAM("Received uncompatible map. Resetting map.");
+//      _local_map = *new_map;
+//    }
+//    else
+//    {
+//      ROS_INFO_STREAM("Updating local map with new data.");
+//      
+//      //Loop over all cells and figure out if the new map has relevant information
+//      //
+//      for (uint64_t i = 0; i < _local_map.info.width * _local_map.info.height; i++)
+//      {
+//        if (_local_map.data[i] < new_map->data[i])
+//	{
+//	  _local_map.data[i] = new_map->data[i];
+//	}
+//      }
+//    }
+//  }
+//
   void OnGoal(vacuumcleaner::cleaningGoalConstPtr /*goal*/)
   {
     ROS_INFO_STREAM("OnGoal: "<<std::this_thread::get_id()); 

@@ -3,8 +3,8 @@
   <name>vacuumcleaner</name>
   <version>0.0.0</version>
   <description>The vacuumcleaner package</description>
-  <maintainer email="william.nagels@gmail.com">william</maintainer>
-  <author email="william.nagels@gmail.com">Jane Doe</author>
+  <maintainer email="william.nagels@gmail.com">William Nagels</maintainer>
+  <author email="william.nagels@gmail.com">William Nagels</author>
   <url type="repository">http://github.com/williamnagels/vacuum-cleaner</url>
   
   <license>Boost</license>
