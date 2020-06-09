@@ -1,40 +1,44 @@
 #include "map.h"
+#include <vacuumcleaner/cleaningAction.h>
 #include <thread>
-#include <ros/ros.h>
 #include <move_base_msgs/MoveBaseAction.h>
 #include <actionlib/server/simple_action_server.h>
 #include <actionlib/client/simple_action_client.h>
-#include <vacuumcleaner/cleaningAction.h>
-#include "nav_msgs/OccupancyGrid.h"
-#include <tf2_ros/transform_listener.h>
 
 using MoveBaseClient = actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction>;
+
+namespace
+{
+  std::string GetParameter(ros::NodeHandle const& node, std::string const& parameter, std::string const& default_value)
+  {
+    std::string parameter_temp;    
+    if (not node.param(parameter, parameter_temp, default_value))
+    {
+      ROS_INFO_STREAM("parameter \""<<parameter<<"\" not found, using default:\""<<default_value<<"\"");
+    }
+    return parameter_temp;
+  }
+}
+
 class CleaningAction
 {
 private:
   ros::NodeHandle _node_handle;
-  //vacuumcleaner::cleaningGoalConstPtr _goal; ///< received goal from actionlib client
-  tf2_ros::Buffer _tf_buffer;
   actionlib::SimpleActionServer<vacuumcleaner::cleaningAction> _action_server;
   std::string _action_name;
   vacuumcleaner::cleaningFeedback _feedback;
-  tf2_ros::TransformListener _tf_listener;
   MoveBaseClient _move_base_client; ///< Will be used to send position goals
   const uint64_t RADIUS = 7;
+  Map _map;
 public:
 
   CleaningAction(std::string const& name) :
     _action_server(_node_handle, name,false),
     _action_name(name),
-    _tf_listener(_tf_buffer),
-    _move_base_client("move_base", true)
+    _move_base_client("move_base", true),
+    _map(_node_handle, GetParameter(_node_handle, "map_topic", "map"))
   {
-    std::string map_topic("map");
-    if (not _node_handle.getParam("map_topic", map_topic))
-    {
-      ROS_INFO_STREAM("No map topic provided, using default:\""<<map_topic<<"\"");
-    }
-    
+   
     while(not _move_base_client.waitForServer(ros::Duration(5.0)))
     {
       ROS_INFO("Waiting for the move_base action server to come up");
@@ -42,26 +46,6 @@ public:
     _action_server.registerGoalCallback([](){ROS_INFO_STREAM("goal callback: "<<std::this_thread::get_id());});
     _action_server.start();
   }
-
-  /*
-   * x = up
-   * y = down
-   */
-//  int8_t GetXY(int64_t x, int64_t y)
-//  {
-//    if (x < 0 or y < 0)
-//    {
-//      return -1;
-//    }
-//
-//    if (x > _local_map.info.height or y > _local_map.info.width)
-//    {
-//      return -1;
-//    }
-//
-//    //ROS_INFO_STREAM("accessing: [" << (map->info.width * y + x)<<"]"); 
-//    return _local_map.data[_local_map.info.width * y + x];
-//  }
 
   /*
    * x = up

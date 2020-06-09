@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 project(vacuumcleaner)
 if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -pipe -fasynchronous-unwind-tables -fstack-protector -fstack-protector-strong -Wall -Wextra -Werror")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -pipe -fasynchronous-unwind-tables -fstack-protector -fstack-protector-strong -Wall -Wextra -Werror -Wuninitialized")
 endif()
 
 find_package(
@@ -30,7 +30,7 @@ catkin_package(
 ###########
 
 include_directories(include ${catkin_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
-add_executable(client src/client.cpp src/map.cpp)
+add_executable(client src/client.cpp )
 set_property(TARGET client PROPERTY CXX_STANDARD 17)
 target_link_libraries( 
   client
@@ -42,7 +42,7 @@ add_dependencies(
   ${vacuumcleaner_EXPORTED_TARGETS}
 )
 
-add_executable(server src/server.cpp)
+add_executable(server src/server.cpp src/map.cpp)
 
 set_property(TARGET server PROPERTY CXX_STANDARD 17)
 target_link_libraries(
