@@ -2,24 +2,10 @@
 
 Map::Map(ros::NodeHandle& _node_handle, std::string const& map_topic)
   :_map_subscriber(_node_handle.subscribe(map_topic, 1000, &Map::OnMap, this))
-  ,_tf_listener(_tf_buffer)	
 {
 }
-void Map::UpdatePosition()
-{
-  geometry_msgs::TransformStamped map_transform;
-  try
-  {
-    map_transform = _tf_buffer.lookupTransform("map", "base_footprint", ros::Time(0));
-    _position = { map_transform.transform.translation.x, map_transform.transform.translation.y};
-  }
-  catch (tf2::TransformException &ex) 
-  {
-    ROS_WARN("%s",ex.what());
-  }
-  
-}
-Map::CellState Map::Convert(int Value)
+
+Map::CellState Map::Convert(int8_t Value)
 {
   if(Value == -1)
   {
@@ -34,7 +20,7 @@ Map::CellState Map::Convert(int Value)
     return CellState::Blocked;
   }
 }
-Map::CellState Map::LocalMap::Convert(int new_state_value, Map::CellState existing_state)
+Map::CellState Map::LocalMap::Convert(int8_t new_state_value, Map::CellState existing_state)
 {
   CellState new_state = Map::Convert(new_state_value);
   
@@ -42,8 +28,7 @@ Map::CellState Map::LocalMap::Convert(int new_state_value, Map::CellState existi
   {
      return new_state;
   }
-  else if ( (existing_state == CellState::Blocked or existing_state == CellState::Unknown) and
-	new_state == CellState::Free)
+  else if ( (existing_state == CellState::Blocked or existing_state == CellState::Unknown) and new_state == CellState::Free)
   {
     return CellState::Free;
   }

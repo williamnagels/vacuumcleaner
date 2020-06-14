@@ -42,7 +42,7 @@ add_dependencies(
   ${vacuumcleaner_EXPORTED_TARGETS}
 )
 
-add_executable(server src/server.cpp src/map.cpp)
+add_executable(server src/server.cpp src/map.cpp src/movement.cpp)
 
 set_property(TARGET server PROPERTY CXX_STANDARD 17)
 target_link_libraries(
