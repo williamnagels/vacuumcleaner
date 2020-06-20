@@ -14,6 +14,7 @@
     <arg name="debug" value="false"/>
     <arg name="gui" value="$(arg gui)" />
     <arg name="world_name" value="$(find vacuumcleaner)/worlds/square"/>
+    <arg name="output" default="log"/>
   </include>
 
 

@@ -2,11 +2,11 @@
 
 struct SpiralPlanner
 {
-    SpiralPlanner(uint64_t radius);
+    SpiralPlanner(double radius);
 
     Coordinates GetNewCoordinates();
     
     private:
         double _u = 0;
-        uint64_t _radius = 0;
+        double _radius = 0;
 };

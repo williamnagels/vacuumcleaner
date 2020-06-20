@@ -15,7 +15,7 @@
     <param name="publish_frequency" type="double" value="30.0" />
   </node>
 
-  <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+  <node pkg="move_base" type="move_base" respawn="false" name="move_base">
     <rosparam file="$(find vacuumcleaner)/config/costmap_common_params.yaml" command="load" ns="global_costmap" />
     <rosparam file="$(find vacuumcleaner)/config/costmap_common_params.yaml" command="load" ns="local_costmap"/>
     <rosparam file="$(find vacuumcleaner)/config/local_costmap_params.yaml" command="load" />
@@ -27,9 +27,10 @@
     <param name="local_costmap/robot_radius" value="$(eval arg('radius'))"/>
     <param name="local_costmap/width" value="$(eval 5*arg('radius'))"/>
     <param name="local_costmap/height" value="$(eval 5*arg('radius'))"/>
+    
     </node>
 
-  <node pkg="gmapping" type="slam_gmapping" name="gmapping_thing" output="screen">
+  <node pkg="gmapping" type="slam_gmapping" name="gmapping_thing">
     <param name="base_frame" value="base_footprint"/>
     <param name="odom_frame" value="odom"/>
     <!--<param name="map_update_interval" value="5.0" />

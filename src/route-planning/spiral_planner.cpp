@@ -1,6 +1,6 @@
 #include "spiral_planner.h"
 
-SpiralPlanner::SpiralPlanner(uint64_t radius)
+SpiralPlanner::SpiralPlanner(double radius)
     :_radius(radius)
 {
 
@@ -12,7 +12,7 @@ Coordinates SpiralPlanner::GetNewCoordinates()
         (_radius / (double)3.14) * _u * sin(-_u)
     };
 
-    _u += 0.1;
+    _u += 3.14/4;
 
     return UpdatedCoords;
 }

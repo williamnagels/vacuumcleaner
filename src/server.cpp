@@ -28,7 +28,7 @@ private:
   actionlib::SimpleActionServer<vacuumcleaner::cleaningAction> _action_server;
   std::string _action_name;
   vacuumcleaner::cleaningFeedback _feedback;
-  const uint64_t RADIUS = 7;
+  double _robot_radius_in_meter;
   Map _map;
   Movement _movement;
   SpiralPlanner _spiral_planner;
@@ -37,33 +37,31 @@ public:
   CleaningAction(std::string const& name)
     :_action_server(_node_handle, name,false)
     ,_action_name(name)
+    ,_robot_radius_in_meter(GetParameter(_node_handle, "robot_radius", 0.1))
     ,_map(_node_handle, GetParameter(_node_handle, "map_topic", std::string("map")))
     ,_movement()
-    ,_spiral_planner(GetParameter(_node_handle, "robot_radius", 1))
+    ,_spiral_planner(_robot_radius_in_meter)
   {
-    _action_server.registerGoalCallback([](){ROS_INFO_STREAM("goal callback: "<<std::this_thread::get_id());});
+    _action_server.registerGoalCallback(std::bind(std::mem_fn(&CleaningAction::OnGoal), this));
     _action_server.start();
   }
 
-  void OnMoveGoalCompletion(const actionlib::SimpleClientGoalState& /*state*/,  const move_base_msgs::MoveBaseResultConstPtr& result) 
+  void OnMoveGoalCompletion(actionlib::SimpleClientGoalState const& /*new_state*/, move_base_msgs::MoveBaseResultConstPtr const& /*result*/) 
   {
-    
-    ROS_INFO_STREAM("Result"<< result); 
     PlanRoute();
   }
 
-
-
   void PlanRoute()
   {
+    Coordinates coords = _spiral_planner.GetNewCoordinates();
+    ROS_INFO_STREAM("new coordinates: \"(" << coords.x() << ","<< coords.y()<<")\"");
     _movement.MoveTo(
-      _spiral_planner.GetNewCoordinates(), 
+      coords, 
       std::bind(std::mem_fn(&CleaningAction::OnMoveGoalCompletion), this, std::placeholders::_1, std::placeholders::_2)
       );
   }
-  void OnGoal(vacuumcleaner::cleaningGoalConstPtr /*goal*/)
+  void OnGoal()
   {
-    ROS_INFO_STREAM("OnGoal: "<<std::this_thread::get_id()); 
     PlanRoute();
   }
 };
