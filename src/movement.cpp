@@ -11,7 +11,7 @@ Movement::Movement()
 }
 
 //
-void Movement::MoveTo(Coordinates coordinates, OnMovementDone callback)
+void Movement::MoveTo(Coordinates coordinates, OnStateChange callback)
 {
    move_base_msgs::MoveBaseGoal goal;
    goal.target_pose.header.frame_id = "map";

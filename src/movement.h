@@ -1,9 +1,10 @@
-#include <Eigen/Dense>
+#include "types.h"
+
 #include <move_base_msgs/MoveBaseAction.h>
 #include <actionlib/server/simple_action_server.h>
 #include <actionlib/client/simple_action_client.h>
 #include <tf2_ros/transform_listener.h>
-using Coordinates = Eigen::Vector2d;
+
 using MoveBaseClient = actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction>;
 
 class Movement
@@ -11,8 +12,8 @@ class Movement
 public:
     Movement();
 
-    using OnMovementDone = std::function< void(const actionlib::SimpleClientGoalState& /*state*/,  const move_base_msgs::MoveBaseResultConstPtr& result)>;
-    void MoveTo(Coordinates coordinates, OnMovementDone callback);
+    using OnStateChange = std::function< void(const actionlib::SimpleClientGoalState& /*state*/,  const move_base_msgs::MoveBaseResultConstPtr& result)>;
+    void MoveTo(Coordinates coordinates, OnStateChange callback);
     Coordinates GetCurrentPosition();
 private:
     MoveBaseClient _client;
