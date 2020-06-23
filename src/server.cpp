@@ -53,10 +53,10 @@ public:
 
   void PlanRoute()
   {
-    Coordinates coords = _spiral_planner.GetNewCoordinates();
-    ROS_INFO_STREAM("new coordinates: \"(" << coords.x() << ","<< coords.y()<<")\"");
+    Pose pose = _spiral_planner.GetNewPose();
+    //ROS_INFO_STREAM("new coordinates: \"(" << pose.x() << ","<< pose.y()<<")\"");
     _movement.MoveTo(
-      coords, 
+      pose, 
       std::bind(std::mem_fn(&CleaningAction::OnMoveGoalCompletion), this, std::placeholders::_1, std::placeholders::_2)
       );
   }

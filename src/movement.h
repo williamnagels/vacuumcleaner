@@ -13,7 +13,7 @@ public:
     Movement();
 
     using OnStateChange = std::function< void(const actionlib::SimpleClientGoalState& /*state*/,  const move_base_msgs::MoveBaseResultConstPtr& result)>;
-    void MoveTo(Coordinates coordinates, OnStateChange callback);
+    void MoveTo(Pose pose, OnStateChange callback);
     Coordinates GetCurrentPosition();
 private:
     MoveBaseClient _client;

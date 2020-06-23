@@ -1,5 +1,5 @@
 #include "movement.h"
-
+ #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 Movement::Movement()
     : _client("move_base", true)
     , _tf_listener(_tf_buffer)	
@@ -11,14 +11,19 @@ Movement::Movement()
 }
 
 //
-void Movement::MoveTo(Coordinates coordinates, OnStateChange callback)
+void Movement::MoveTo(Pose pose, OnStateChange callback)
 {
    move_base_msgs::MoveBaseGoal goal;
    goal.target_pose.header.frame_id = "map";
    goal.target_pose.header.stamp = ros::Time::now();
-   goal.target_pose.pose.position.x = coordinates.x();
-   goal.target_pose.pose.position.y = coordinates.y();
-   goal.target_pose.pose.orientation.w = 1.0;
+   goal.target_pose.pose.position.x = pose.coordinates.x();
+   goal.target_pose.pose.position.y = pose.coordinates.y();
+
+  tf2::Quaternion quaternion;
+   quaternion.setRPY( 0, 0, pose.angle);
+   quaternion.normalize();
+   tf2::convert(quaternion, goal.target_pose.pose.orientation);
+
    _client.sendGoal(goal, callback);
 }
 
