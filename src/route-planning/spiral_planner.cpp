@@ -3,34 +3,32 @@
 #include <math.h>
 namespace
 {
-    Angle CalculateAngle(Coordinates b)
+    Radians CalculateAngle(Coordinates b)
     {
-        Angle angle = acos( b.x() / b.norm());
-
-        if (b.y() < 0)
-        {
-            angle *= -1;
-        }
+        Radians angle = acos( b.x() / b.norm());
+        angle -= 2 * angle * (b.y() <0);
         return angle;
     }
 }
 
-SpiralPlanner::SpiralPlanner(double radius)
+SpiralPlanner::SpiralPlanner(double radius, Radians goal_delta)
     :_radius(radius)
+    ,_goal_delta(goal_delta)
 {
 
 }
 Pose SpiralPlanner::GetNewPose()
 {
+    Radians next_u = _u + _goal_delta;
     Coordinates current_goal_position = Calculate(_u);
-    Coordinates future_goal_position = Calculate(_u + M_PI_2);
+    Coordinates future_goal_position = Calculate(next_u);
+    Radians angle = CalculateAngle(future_goal_position - current_goal_position);
+    _u = next_u;
 
-    ROS_INFO_STREAM("Current goal to: \"(" << current_goal_position.x() << ","<< current_goal_position.y()<<")\"");
-    ROS_INFO_STREAM("Future goal to: \"(" << future_goal_position.x() << ","<< future_goal_position.y()<<")\"");
-
-    _u += M_PI_2;
-    Angle angle = CalculateAngle(future_goal_position - current_goal_position);
-    ROS_INFO_STREAM("angle: \"(" << angle <<")\"");
+    ROS_DEBUG_STREAM("Current goal to: \"(" << current_goal_position.x() << ","<< current_goal_position.y()<<")\"");
+    ROS_DEBUG_STREAM("Future goal to: \"(" << future_goal_position.x() << ","<< future_goal_position.y()<<")\"");
+    ROS_DEBUG_STREAM("Angle (radians): \"(" << angle <<")\"");
+    
     return Pose{current_goal_position, angle};
 }
 

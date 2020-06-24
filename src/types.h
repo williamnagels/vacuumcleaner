@@ -2,10 +2,10 @@
 #include <Eigen/Dense>
 
 using Coordinates = Eigen::Vector2d;
-using Angle = double;
+using Radians = double;
 
 struct Pose
 {
-    Coordinates coordinates;
-    Angle angle;
+    Coordinates coordinates; // x, y coordinates
+    Radians angle; //rotation z-axis
 };

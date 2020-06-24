@@ -1,13 +1,16 @@
 <launch>
   <master auto="start"/>
 
-  <arg name="radius"/>
+  <arg name="robot_radius"/>
+  <arg name="spiral_delta_denominator" />
   <arg name="use_sim_time" default="true"/>
   
-  <param name="robot_description" command="xacro '$(find vacuumcleaner)/config/vacuumcleaner_model/model.xacro' body_radius:=$(arg radius)"/>
+  <param name="robot_description" command="xacro '$(find vacuumcleaner)/config/vacuumcleaner_model/model.xacro' body_radius:=$(arg robot_radius)"/>
+  <param name="robot_radius" value="$(eval arg('robot_radius'))" />
+  <param name="spiral_delta_denominator" value="$(eval arg('spiral_delta_denominator'))" />
+  
+  <node pkg="vacuumcleaner" name="server" type="server" output="screen" />
 
-
-  <node pkg="vacuumcleaner" name="server" type="server" output="screen"/>
   <node pkg="vacuumcleaner" name="client" type="client" output="screen"/>
 
 
@@ -23,10 +26,10 @@
     <rosparam file="$(find vacuumcleaner)/config/base_local_planner_params.yaml" command="load" />
     <param name="global_costmap/resolution" value="0.01"/>
     <param name="local_costmap/resolution" value="0.01"/>
-    <param name="global_costmap/robot_radius" value="$(eval arg('radius'))"/>
-    <param name="local_costmap/robot_radius" value="$(eval arg('radius'))"/>
-    <param name="local_costmap/width" value="$(eval 5*arg('radius'))"/>
-    <param name="local_costmap/height" value="$(eval 5*arg('radius'))"/>
+    <param name="global_costmap/robot_radius" value="$(eval arg('robot_radius'))"/>
+    <param name="local_costmap/robot_radius" value="$(eval arg('robot_radius'))"/>
+    <param name="local_costmap/width" value="$(eval 5*arg('robot_radius'))"/>
+    <param name="local_costmap/height" value="$(eval 5*arg('robot_radius'))"/>
     
     </node>
 
