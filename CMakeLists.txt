@@ -3,6 +3,7 @@ project(vacuumcleaner)
 if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -pipe -fasynchronous-unwind-tables -fstack-protector -fstack-protector-strong -Wall -Wextra -Werror -Wuninitialized")
 endif()
+set(CMAKE_VERBOSE_MAKEFILE ON)
 
 find_package(
   catkin REQUIRED COMPONENTS
@@ -30,7 +31,10 @@ catkin_package(
 ###########
 
 include_directories(include ${catkin_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
+
 add_executable(client src/client.cpp )
+target_include_directories(client PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
+
 set_property(TARGET client PROPERTY CXX_STANDARD 17)
 target_link_libraries( 
   client
@@ -43,8 +47,9 @@ add_dependencies(
 )
 
 add_executable(server src/server.cpp src/map.cpp src/movement.cpp src/route-planning/spiral_planner.cpp)
-
+target_include_directories(server PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
 set_property(TARGET server PROPERTY CXX_STANDARD 17)
+
 target_link_libraries(
   server
   ${catkin_LIBRARIES}
