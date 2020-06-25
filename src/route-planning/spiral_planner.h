@@ -1,10 +1,10 @@
 #include "types.h"
-
+#include <queue>
 struct SpiralPlanner
 {
     SpiralPlanner(double radius, Radians goal_delta);
 
-    Pose GetNewPose();
+    std::queue<Pose> GetNextPoses();
     
     private:
         Radians _u = 0;

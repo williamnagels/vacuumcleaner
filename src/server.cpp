@@ -46,19 +46,9 @@ public:
     _action_server.start();
   }
 
-  void OnMoveGoalCompletion(actionlib::SimpleClientGoalState const& /*new_state*/, move_base_msgs::MoveBaseResultConstPtr const& /*result*/) 
-  {
-    PlanRoute();
-  }
-
   void PlanRoute()
   {
-    Pose pose = _spiral_planner.GetNewPose();
-    //ROS_INFO_STREAM("new coordinates: \"(" << pose.x() << ","<< pose.y()<<")\"");
-    _movement.MoveTo(
-      pose, 
-      std::bind(std::mem_fn(&CleaningAction::OnMoveGoalCompletion), this, std::placeholders::_1, std::placeholders::_2)
-      );
+    _movement.Add(_spiral_planner.GetNextPoses());
   }
   void OnGoal()
   {
