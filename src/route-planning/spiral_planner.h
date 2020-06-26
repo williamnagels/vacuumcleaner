@@ -1,10 +1,11 @@
+#pragma once
 #include "types.h"
-#include <queue>
-struct SpiralPlanner
+#include "pose_generator.h"
+struct SpiralPlanner : PoseGenerator
 {
     SpiralPlanner(double radius, Radians goal_delta);
 
-    std::queue<Pose> GetNextPoses();
+    Pose Generate() override;
     
     private:
         Radians _u = 0;

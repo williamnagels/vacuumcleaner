@@ -3,20 +3,22 @@
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 
 
-Movement::Movement()
+Movement::Movement(PoseGenerator& generator)
     : _client("move_base", true)
     , _tf_listener(_tf_buffer)	
     , _distance_before_scheduling_new_goal(0.1)
+    , _generator(generator)
 {
     while(not _client.waitForServer(ros::Duration(5.0)))
     {
       ROS_INFO("Waiting for the move_base action server to come up");
     }
+
+    MoveTo(_generator.Generate());
 }
 
 void Movement::FeedbackCallback(move_base_msgs::MoveBaseFeedbackConstPtr const& feedback)
 {
-
   Eigen::Vector2d v1{feedback->base_position.pose.position.x, feedback->base_position.pose.position.y};
   Eigen::Vector2d v2{_active_goal.target_pose.pose.position.x, _active_goal.target_pose.pose.position.y};
 
@@ -25,27 +27,10 @@ void Movement::FeedbackCallback(move_base_msgs::MoveBaseFeedbackConstPtr const& 
   //ROS_INFO_STREAM("feedback: "<<remaining_distance_to_travel);
   if (remaining_distance_to_travel < _distance_before_scheduling_new_goal)
   {
-    _poses.pop();
-    
-    if (_poses.size())
-    {
-      MoveTo(_poses.front());
-      
-    }
-    else
-    {
-      ROS_INFO_STREAM("no more poses to navigate to.");
-    }
-  }
-
-  
+    MoveTo(_generator.Generate());
+  } 
 }
 
-void Movement::Add(std::queue<Pose> const& poses)
-{
-  _poses = poses;
-  MoveTo(_poses.front());
-}
 void Movement::MoveTo(Pose const& pose)
 {
   _active_goal.target_pose.header.frame_id = "map";

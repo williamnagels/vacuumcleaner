@@ -30,8 +30,8 @@ private:
   vacuumcleaner::cleaningFeedback _feedback;
   double _robot_radius_in_meter;
   Map _map;
-  Movement _movement;
   SpiralPlanner _spiral_planner;
+  Movement _movement;
 public:
 
   CleaningAction(std::string const& name)
@@ -39,20 +39,16 @@ public:
     ,_action_name(name)
     ,_robot_radius_in_meter(GetParameter(_node_handle, "robot_radius", 0.1))
     ,_map(_node_handle, GetParameter(_node_handle, "map_topic", std::string("map")))
-    ,_movement()
     ,_spiral_planner(_robot_radius_in_meter, M_PI/GetParameter(_node_handle, "spiral_delta_denominator", 8))
+    ,_movement(_spiral_planner)
   {
     _action_server.registerGoalCallback(std::bind(std::mem_fn(&CleaningAction::OnGoal), this));
     _action_server.start();
   }
 
-  void PlanRoute()
-  {
-    _movement.Add(_spiral_planner.GetNextPoses());
-  }
   void OnGoal()
   {
-    PlanRoute();
+
   }
 };
 

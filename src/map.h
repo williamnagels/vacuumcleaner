@@ -1,3 +1,5 @@
+#pragma once
+
 #include "nav_msgs/OccupancyGrid.h"
 #include <Eigen/Dense>
 #include <ros/node_handle.h>
