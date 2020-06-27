@@ -2,14 +2,14 @@
   <master auto="start"/>
 
   <arg name="robot_radius"/>
-  <arg name="spiral_delta_denominator" />
   <arg name="use_sim_time" default="true"/>
   
   <param name="robot_description" command="xacro '$(find vacuumcleaner)/config/vacuumcleaner_model/model.xacro' body_radius:=$(arg robot_radius)"/>
   <param name="robot_radius" value="$(eval arg('robot_radius'))" />
-  <param name="spiral_delta_denominator" value="$(eval arg('spiral_delta_denominator'))" />
-  
-  <node pkg="vacuumcleaner" name="server" type="server" output="screen" />
+
+  <node pkg="vacuumcleaner" name="server" type="server" output="screen"> 
+    <rosparam command="load" file="$(find vacuumcleaner)/config/cleaning.yaml" />
+  </node>
 
   <node pkg="vacuumcleaner" name="client" type="client" output="screen"/>
 
@@ -36,11 +36,5 @@
   <node pkg="gmapping" type="slam_gmapping" name="gmapping_thing">
     <param name="base_frame" value="base_footprint"/>
     <param name="odom_frame" value="odom"/>
-    <!--<param name="map_update_interval" value="5.0" />
-    <param name="delta" value="$(eval arg('radius')*2)" />
-    <param name="particles" value="50" />
-    <param name="linearUpdate" value="0.1" />
-    <param name="angularaUpdate" value="0.05" />
-    <param name="minimumScore" value="30" /> -->
   </node>
 </launch>

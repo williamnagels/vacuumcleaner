@@ -1,0 +1,3 @@
+vacuumcleaner:
+  spiral_delta_denominator: 8
+  map_topic: "map"

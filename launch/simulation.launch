@@ -4,11 +4,9 @@
   <arg name="world_file" default="world"/>
   
   <arg name="robot_radius"/>
-  <arg name="spiral_delta_denominator" />
 
   <include file="$(find vacuumcleaner)/launch/robot.launch">
     <arg name="robot_radius" value="$(arg robot_radius)"/>
-    <arg name="spiral_delta_denominator" value="$(arg spiral_delta_denominator)"/>
     <arg name="use_sim_time" value="$(arg use_sim_time)" />
   </include>
 
