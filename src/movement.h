@@ -8,12 +8,10 @@
 #include <tf2_ros/transform_listener.h>
 using MoveBaseClient = actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction>;
 
-
-
 class Movement
 {
 public:
-    Movement(PoseGenerator& Generator);
+    Movement(PoseGenerator& generator);
 
     void FeedbackCallback(move_base_msgs::MoveBaseFeedbackConstPtr const& feedback);
     Coordinates GetCurrentPosition();
