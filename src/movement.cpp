@@ -3,11 +3,13 @@
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 
 
-Movement::Movement(PoseGenerator& generator)
+Movement::Movement(PoseGenerator& generator, PositionChangedCallback position_changed_callback)
     : _client("move_base", true)
     , _tf_listener(_tf_buffer)	
     , _distance_before_scheduling_new_goal(0.1)
+    , _distance_before_position_changed_callback(0.05)
     , _generator(generator)
+    , _position_changed_callback(position_changed_callback)
 {
     while(not _client.waitForServer(ros::Duration(5.0)))
     {
@@ -28,6 +30,14 @@ void Movement::FeedbackCallback(move_base_msgs::MoveBaseFeedbackConstPtr const& 
   if (remaining_distance_to_travel < _distance_before_scheduling_new_goal)
   {
     MoveTo(_generator.Generate());
+  } 
+
+  remaining_distance_to_travel = (v1 - _last_known_position).array().square().sum();
+  
+  if (remaining_distance_to_travel < _distance_before_position_changed_callback)
+  {
+    _last_known_position = v1;
+    _position_changed_callback(_last_known_position);
   } 
 }
 

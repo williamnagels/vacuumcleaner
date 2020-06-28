@@ -13,7 +13,7 @@ namespace
   auto GetParameter(ros::NodeHandle const& node, std::string const& parameter, T const& default_value) -> T
   {
     T parameter_temp;    
-    if (not node.param(parameter, parameter_temp, default_value))
+    if (not node.param(std::string("/server/vacuumcleaner/") + parameter, parameter_temp, default_value))
     {
       ROS_INFO_STREAM("parameter \""<<parameter<<"\" not found, using default:\""<<default_value<<"\"");
     }
@@ -38,9 +38,9 @@ public:
     :_action_server(_node_handle, name,false)
     ,_action_name(name)
     ,_robot_radius_in_meter(GetParameter(_node_handle, "robot_radius", 0.1))
-    ,_map(_node_handle, GetParameter(_node_handle, "/server/vacuumcleaner/map_topic", std::string("map")))
-    ,_spiral_planner(_robot_radius_in_meter, M_PI/GetParameter(_node_handle, "/server/vacuumcleaner/spiral_delta_denominator", 8))
-    ,_movement(_spiral_planner)
+    ,_map(_node_handle, GetParameter(_node_handle, "map_topic", std::string("map")))
+    ,_spiral_planner(_robot_radius_in_meter, M_PI/GetParameter(_node_handle, "spiral_delta_denominator", 8))
+    ,_movement(_spiral_planner, [this](auto coordinates){_map.OnPositionChanged(coordinates);})
   {
     _action_server.registerGoalCallback(std::bind(std::mem_fn(&CleaningAction::OnGoal), this));
     _action_server.start();

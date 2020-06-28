@@ -1,5 +1,5 @@
 #pragma once
-
+#include "types.h"
 #include "nav_msgs/OccupancyGrid.h"
 #include <Eigen/Dense>
 #include <ros/node_handle.h>
@@ -8,7 +8,7 @@ class Map
 public:
   Map(ros::NodeHandle& handle, std::string const& map_topic); ///< Create Map that will subscribe some topic to get occupancy grid updates from.
   void OnMap(nav_msgs::OccupancyGrid::Ptr const& new_map); ///< Callback for occupancy grid updates
-
+  void OnPositionChanged(Coordinates NewPosition);
   enum class CellState  
   {
     Free=0,
@@ -20,6 +20,7 @@ public:
   using Dimensions = Eigen::Matrix<uint64_t, 2,1>;
 
   CellState GetState(CellIndex);
+  CellIndex GetIndex(Coordinates);
   static CellState Convert(int8_t);
 private:
   struct LocalMap
@@ -27,6 +28,8 @@ private:
     void Update(nav_msgs::OccupancyGrid::ConstPtr const& new_map);
     CellState GetCellState(CellIndex);
     static CellState Convert(int8_t, CellState);
+
+    Dimensions GetDimensions() const;
     private:
       std::vector<CellState> _state;
       Dimensions _dimensions;
@@ -35,5 +38,5 @@ private:
   LocalMap _map;
 
   ros::Subscriber _map_subscriber; ///< Will subscribe to map updates
-
+  Coordinates _offset;
 };

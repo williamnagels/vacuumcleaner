@@ -57,16 +57,38 @@ void Map::LocalMap::Update(nav_msgs::OccupancyGrid::ConstPtr const& new_map)
     return Reset(new_map);
   }
   
-  std::transform(std::begin(new_map->data), std::end(new_map->data), std::begin(_state), std::begin(_state), &Map::LocalMap::Convert);
+  std::transform(
+    std::begin(new_map->data), std::end(new_map->data), 
+    std::begin(_state), std::begin(_state), 
+    &Map::LocalMap::Convert);
 }
 
 void Map::OnMap(nav_msgs::OccupancyGrid::Ptr const& new_map)
 {
+  _offset = {new_map->info.origin.position.x, new_map->info.origin.position.y};
   _map.Update(new_map);
+}
+void Map::OnPositionChanged(Coordinates position)
+{
+ GetIndex(position);
+}
+auto Map::GetIndex(Coordinates position) -> CellIndex
+{
+  CellIndex cell_index;
+
+  Coordinates offset_corrected = position + _offset;
+  cell_index.x() = offset_corrected.x() / _map.GetDimensions().x();
+  cell_index.y() = offset_corrected.y() / _map.GetDimensions().y();
+
+  return cell_index;
+}
+auto Map::LocalMap::GetDimensions() const -> Dimensions
+{
+  return _dimensions;
 }
 Map::CellState Map::LocalMap::GetCellState(Map::CellIndex cell_index)
 {
-  if (_dimensions.y() > cell_index.y() or _dimensions.x() > cell_index.x())
+  if (_dimensions.y() < cell_index.y() or _dimensions.x() < cell_index.x())
   {
     return Map::CellState::Unknown;
   }
