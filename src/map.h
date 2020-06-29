@@ -8,35 +8,31 @@ class Map
 public:
   Map(ros::NodeHandle& handle, std::string const& map_topic); ///< Create Map that will subscribe some topic to get occupancy grid updates from.
   void OnMap(nav_msgs::OccupancyGrid::Ptr const& new_map); ///< Callback for occupancy grid updates
-  void OnPositionChanged(Coordinates NewPosition);
+  void OnPositionChanged(Coordinates new_position); ///< callback if robot position changed a significantly enough distance
   enum class CellState  
   {
-    Free=0,
-    Visited=1,
-    Blocked=2,
-    Unknown=3,
+    Free,
+    Visited,
+    Blocked,
+    Unknown,
   };
-  using CellIndex = Eigen::Matrix<uint64_t, 2,1>;
-  using Dimensions = Eigen::Matrix<uint64_t, 2,1>;
+  
+  using GridDimensionType = nav_msgs::OccupancyGrid::_info_type::_width_type;
+  using GridValueType = nav_msgs::OccupancyGrid::_data_type::value_type;
+  using CellIndex = Eigen::Matrix<GridDimensionType, 2,1>;
+  using Dimensions = Eigen::Matrix<GridDimensionType, 2,1>;
 
-  CellState GetState(CellIndex);
-  CellIndex GetIndex(Coordinates);
-  static CellState Convert(int8_t);
+  CellState Get(CellIndex); ///< get state of cell at index
+  CellIndex Get(Coordinates); ///< convert world coordinates to a cell index
+  void Set(CellIndex cell_index, CellState new_state);
+  GridValueType Convert(GridValueType new_value, GridValueType old_value);
+
 private:
-  struct LocalMap
-  {
-    void Update(nav_msgs::OccupancyGrid::ConstPtr const& new_map);
-    CellState GetCellState(CellIndex);
-    static CellState Convert(int8_t, CellState);
-
-    Dimensions GetDimensions() const;
-    private:
-      std::vector<CellState> _state;
-      Dimensions _dimensions;
-      void Reset(nav_msgs::OccupancyGrid::ConstPtr const& new_map);
-  };
-  LocalMap _map;
-
+  CellState Convert(GridValueType) const;
+  GridValueType Convert(Map::CellState Value) const;
+  GridDimensionType ToArrayIndex(CellIndex cell_index) const;
+  nav_msgs::OccupancyGrid::Ptr _map;
   ros::Subscriber _map_subscriber; ///< Will subscribe to map updates
-  Coordinates _offset;
+  GridValueType _free_blocked_threshold = 70;
+  GridValueType _visited_threshold = 101;
 };
