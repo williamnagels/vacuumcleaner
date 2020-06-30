@@ -8,6 +8,7 @@
   <include file="$(find vacuumcleaner)/launch/robot.launch">
     <arg name="robot_radius" value="$(arg robot_radius)"/>
     <arg name="use_sim_time" value="$(arg use_sim_time)" />
+
   </include>
 
   <include file="$(find gazebo_ros)/launch/empty_world.launch">

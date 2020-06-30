@@ -4,11 +4,16 @@
   <arg name="robot_radius"/>
   <arg name="use_sim_time" default="true"/>
   
+  <rosparam command="load" file="$(find vacuumcleaner)/config/config.yaml" />
+  <param name="/vacuumcleaner/robot/radius" value="$(eval arg('robot_radius'))" />
+  
   <param name="robot_description" command="xacro '$(find vacuumcleaner)/config/vacuumcleaner_model/model.xacro' body_radius:=$(arg robot_radius)"/>
-  <param name="robot_radius" value="$(eval arg('robot_radius'))" />
+  
 
+  
+  
   <node pkg="vacuumcleaner" name="server" type="server" output="screen"> 
-    <rosparam command="load" file="$(find vacuumcleaner)/config/cleaning.yaml" />
+    
   </node>
 
   <node pkg="vacuumcleaner" name="client" type="client" output="screen"/>

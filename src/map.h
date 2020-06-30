@@ -6,7 +6,7 @@
 class Map
 {
 public:
-  Map(ros::NodeHandle& handle, std::string const& map_topic); ///< Create Map that will subscribe some topic to get occupancy grid updates from.
+  Map(ros::NodeHandle& handle, std::string const& map_topic, std::string const& updated_map_topic); ///< Create Map that will subscribe some topic to get occupancy grid updates from.
   void OnMap(nav_msgs::OccupancyGrid::Ptr const& new_map); ///< Callback for occupancy grid updates
   void OnPositionChanged(Coordinates new_position); ///< callback if robot position changed a significantly enough distance
   enum class CellState  
@@ -33,6 +33,7 @@ private:
   GridDimensionType ToArrayIndex(CellIndex cell_index) const;
   nav_msgs::OccupancyGrid::Ptr _map;
   ros::Subscriber _map_subscriber; ///< Will subscribe to map updates
+  ros::Publisher  _map_publisher; ///< Publish updated map
   GridValueType _free_blocked_threshold = 70;
   GridValueType _visited_threshold = 101;
 };
