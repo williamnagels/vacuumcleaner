@@ -24,10 +24,11 @@ void Map::OnMap(nav_msgs::OccupancyGrid::Ptr const& new_map)
 }
 void Map::OnPositionChanged(Coordinates position)
 {
- CellIndex cell_index = Get(position);
- Set(cell_index, CellState::Visited);
+  CellIndex cell_index = Get(position);
+  Set(cell_index, CellState::Visited);
 
   _map_publisher.publish(_map);
+   ROS_INFO_STREAM("publishing updated map");
 }
 auto Map::Get(Coordinates position) -> CellIndex
 {

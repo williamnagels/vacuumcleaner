@@ -32,9 +32,9 @@ void Movement::FeedbackCallback(move_base_msgs::MoveBaseFeedbackConstPtr const& 
     MoveTo(_generator.Generate());
   } 
 
-  remaining_distance_to_travel = (v1 - _last_known_position).array().square().sum();
+  double distance_traveled_since_known_position = (v1 - _last_known_position).array().square().sum();
   
-  if (remaining_distance_to_travel < _distance_before_position_changed_callback)
+  if (distance_traveled_since_known_position > _distance_before_position_changed_callback)
   {
     _last_known_position = v1;
     _position_changed_callback(_last_known_position);
