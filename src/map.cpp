@@ -1,8 +1,8 @@
 #include "map.h"
-
-Map::Map(ros::NodeHandle& _node_handle, std::string const& map_topic, std::string const& /*updated_map_topic*/)
-  :_map_subscriber(_node_handle.subscribe(map_topic, 1000, &Map::OnMap, this))
-  ,_map_publisher(_node_handle.advertise<nav_msgs::OccupancyGrid>(map_topic+"_updated", 1000))
+#include "parameter.h"
+Map::Map(ros::NodeHandle& _node_handle)
+  :_map_subscriber(_node_handle.subscribe(GetParameter(PARAM_VISITED_MAP_SUBSCRIBE_TOPIC, std::string("map")), 1000, &Map::OnMap, this))
+  ,_map_publisher(_node_handle.advertise<nav_msgs::OccupancyGrid>(GetParameter(PARAM_VISITED_MAP_PUBLISHED_TOPIC, std::string("updated_map")), 1000))
 {
 }
 
@@ -28,7 +28,6 @@ void Map::OnPositionChanged(Coordinates position)
   Set(cell_index, CellState::Visited);
 
   _map_publisher.publish(_map);
-   ROS_INFO_STREAM("publishing updated map");
 }
 auto Map::Get(Coordinates position) -> CellIndex
 {

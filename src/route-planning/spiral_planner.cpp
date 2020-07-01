@@ -1,11 +1,12 @@
+#include "parameter.h"
 #include "spiral_planner.h"
 #include <ros/console.h>
 #include <math.h>
 
 
-SpiralPlanner::SpiralPlanner(double radius, Radians goal_delta)
-    :_radius(radius)
-    ,_goal_delta(goal_delta)
+SpiralPlanner::SpiralPlanner()
+    :_radius(GetParameter(PARAM_ROBOT_RADIUS, 0.1))
+    ,_goal_delta(M_PI/GetParameter(PARAM_SPIRAL_DELTA_DENOMINATOR, 8))
 {
 }
 

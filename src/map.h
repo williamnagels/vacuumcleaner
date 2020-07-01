@@ -6,7 +6,7 @@
 class Map
 {
 public:
-  Map(ros::NodeHandle& handle, std::string const& map_topic, std::string const& updated_map_topic); ///< Create Map that will subscribe some topic to get occupancy grid updates from.
+  Map(ros::NodeHandle& handle); ///< Create Map that will subscribe some topic to get occupancy grid updates from.
   void OnMap(nav_msgs::OccupancyGrid::Ptr const& new_map); ///< Callback for occupancy grid updates
   void OnPositionChanged(Coordinates new_position); ///< callback if robot position changed a significantly enough distance
   enum class CellState  
