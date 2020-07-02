@@ -11,7 +11,7 @@ Movement::Movement(PoseGenerator& generator, PositionChangedCallback position_ch
     , _generator(generator)
     , _position_changed_callback(position_changed_callback)
 {
-    while(not _client.waitForServer(ros::Duration(5.0)))
+    while(not _client.waitForServer())
     {
       ROS_INFO("Waiting for the move_base action server to come up");
     }

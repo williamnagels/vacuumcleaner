@@ -21,23 +21,27 @@ void Map::OnMap(nav_msgs::OccupancyGrid::Ptr const& new_map)
     std::begin(_map->data), std::begin(_map->data), 
     [this](GridValueType n, GridValueType o){return this->Convert(n, o);});
 
+  ROS_INFO_STREAM("new map");
 }
 void Map::OnPositionChanged(Coordinates position)
 {
+  if (not _map)
+  {
+    return;
+  }
+
   CellIndex cell_index = Get(position);
+  ROS_INFO_STREAM("I'm at position "<<position<< " which is cell "<< cell_index);
   Set(cell_index, CellState::Visited);
 
+   
   _map_publisher.publish(_map);
 }
 auto Map::Get(Coordinates position) -> CellIndex
 {
-  CellIndex cell_index;
+  Coordinates offset_corrected = position - Coordinates{_map->info.origin.position.x, _map->info.origin.position.y};  
 
-  Coordinates offset_corrected = position + Coordinates{_map->info.origin.position.x, _map->info.origin.position.y};
-  cell_index.x() = offset_corrected.x() / _map->info.width;
-  cell_index.y() = offset_corrected.y() / _map->info.height;
-
-  return cell_index;
+  return {offset_corrected.x() /  _map->info.resolution, offset_corrected.y() /  _map->info.resolution};
 }
 
 
