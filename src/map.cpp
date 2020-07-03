@@ -16,25 +16,20 @@ void Map::OnMap(nav_msgs::OccupancyGrid::Ptr const& new_map)
     return;
   }
   
-  std::transform(
-    std::begin(new_map->data), std::end(new_map->data), 
-    std::begin(_map->data), std::begin(_map->data), 
-    [this](GridValueType n, GridValueType o){return this->Convert(n, o);});
+  // std::transform(
+  //   std::begin(new_map->data), std::end(new_map->data), // Input 1
+  //   std::begin(_map->data), // Input 2
+  //   std::begin(_map->data), //Output
+  //   [this](GridValueType n, GridValueType o){return this->Convert(n, o);});
 
-  ROS_INFO_STREAM("new map");
 }
 void Map::OnPositionChanged(Coordinates position)
 {
-  if (not _map)
-  {
-    return;
-  }
+  if (not _map) return;
 
   CellIndex cell_index = Get(position);
-  ROS_INFO_STREAM("I'm at position "<<position<< " which is cell "<< cell_index);
   Set(cell_index, CellState::Visited);
-
-   
+  
   _map_publisher.publish(_map);
 }
 auto Map::Get(Coordinates position) -> CellIndex
@@ -47,8 +42,8 @@ auto Map::Get(Coordinates position) -> CellIndex
 
 auto Map::ToArrayIndex(CellIndex cell_index) const -> GridDimensionType
 {
-  cell_index.y() *= _map->info.width;
-  return cell_index.prod();
+  cell_index.y() *= (_map->info.width * _map->info.resolution);
+  return cell_index.sum();
 }
 
 auto Map::Get(Map::CellIndex cell_index) -> CellState 
@@ -59,9 +54,9 @@ void Map::Set(CellIndex cell_index, CellState new_state)
 {
   _map->data[ToArrayIndex(cell_index)] = Convert(new_state);
 }
-auto Map::Convert(GridValueType Value) const -> CellState
+auto Map::Convert(GridValueType /*Value*/) const -> CellState
 {
-  if(Value == -1)
+  /*if(Value == -1)
   {
     return CellState::Unknown;
   }
@@ -77,7 +72,8 @@ auto Map::Convert(GridValueType Value) const -> CellState
   else
   {
     return CellState::Blocked;
-  }
+  }*/
+  return CellState::Visited;
 }
 
 auto Map::Convert(Map::CellState value) const -> GridValueType 
