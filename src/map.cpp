@@ -6,98 +6,109 @@ Map::Map(ros::NodeHandle& _node_handle)
 {
 }
 
-void Map::OnMap(nav_msgs::OccupancyGrid::Ptr const& new_map)
+void Map::OnMap(nav_msgs::OccupancyGrid::ConstPtr const& new_map)
 {
   GridDimensionType amount_of_cells = new_map->info.width * new_map->info.height;
 
-  if (not _map or _map->info.width * _map->info.height != amount_of_cells)
+  if (_map.info.width * _map.info.height != amount_of_cells)
   {
-    _map = new_map;
-    return;
+    _map = *new_map;
   }
   
-  // std::transform(
-  //   std::begin(new_map->data), std::end(new_map->data), // Input 1
-  //   std::begin(_map->data), // Input 2
-  //   std::begin(_map->data), //Output
-  //   [this](GridValueType n, GridValueType o){return this->Convert(n, o);});
+  std::transform(
+    std::begin(new_map->data), std::end(new_map->data),
+    std::begin(_map.data),
+    std::begin(_map.data),
+    [this](GridValueType n, GridValueType o){return Convert(n, o);});
 
 }
 void Map::OnPositionChanged(Coordinates position)
 {
-  if (not _map) return;
+  if (not _map.info.height) return;
 
   CellIndex cell_index = Get(position);
   Set(cell_index, CellState::Visited);
-  
+
   _map_publisher.publish(_map);
 }
 auto Map::Get(Coordinates position) -> CellIndex
 {
-  Coordinates offset_corrected = position - Coordinates{_map->info.origin.position.x, _map->info.origin.position.y};  
+  Coordinates offset_corrected = position - Coordinates{_map.info.origin.position.x, _map.info.origin.position.y};  
 
-  return {offset_corrected.x() /  _map->info.resolution, offset_corrected.y() /  _map->info.resolution};
+  return {offset_corrected.x() /  _map.info.resolution, offset_corrected.y() /  _map.info.resolution};
 }
 
 
 auto Map::ToArrayIndex(CellIndex cell_index) const -> GridDimensionType
 {
-  cell_index.y() *= (_map->info.width * _map->info.resolution);
+  cell_index.y() *= _map.info.width;
   return cell_index.sum();
 }
 
 auto Map::Get(Map::CellIndex cell_index) -> CellState 
 {
-  return Convert(_map->data[ToArrayIndex(cell_index)]);
+  return Convert(_map.data[ToArrayIndex(cell_index)]);
 }
 void Map::Set(CellIndex cell_index, CellState new_state)
 {
-  _map->data[ToArrayIndex(cell_index)] = Convert(new_state);
+  _map.data[ToArrayIndex(cell_index)] = Convert(new_state);
 }
-auto Map::Convert(GridValueType /*Value*/) const -> CellState
+auto Map::Convert(GridValueType Value) const -> CellState
 {
-  /*if(Value == -1)
+  if(Value == _unknown_cell_value)
   {
     return CellState::Unknown;
   }
   // 0 - 100 means not blocked; 100 means blocked
-  else if(Value < _free_blocked_threshold)
+  else if(Value < _free_blocked_threshold_cell_value)
   {
     return CellState::Free;
   }
-  else if (Value ==  _visited_threshold)
+  else if (Value ==  _visited_threshold_cell_value)
   {
     return CellState::Visited;
   }
   else
   {
     return CellState::Blocked;
-  }*/
-  return CellState::Visited;
+  }
 }
 
 auto Map::Convert(Map::CellState value) const -> GridValueType 
 {
   if(value == CellState::Unknown)
   {
-    return -1;
+    return _unknown_cell_value;
   }
-  // 0 - 100 means not blocked; 100 means blocked
   else if(value == CellState::Free)
   {
-    return _free_blocked_threshold - 1;
+    return _free_blocked_threshold_cell_value - 1;
   }
   else if(value == CellState::Visited)
   {
-    return _visited_threshold;
+    return _visited_threshold_cell_value;
   }
   else
   {
-    return _free_blocked_threshold;
+    return _free_blocked_threshold_cell_value;
   }
 }
 
-auto Map::Convert(GridValueType new_state_value, GridValueType /*existing_state*/) -> GridValueType 
+auto Map::Convert(GridValueType new_state_value, GridValueType existing_state_value) -> GridValueType 
 {
-  return new_state_value;
+  CellState new_state = Convert(new_state_value);
+  CellState existing_state = Convert(existing_state_value);
+
+  
+  if (new_state == CellState::Blocked or new_state == CellState::Unknown)
+  {
+    return Convert(new_state);
+  }
+  else if (new_state == CellState::Free and (existing_state == CellState::Blocked or existing_state == CellState::Unknown))
+  {
+    return Convert(CellState::Free);
+  }
+
+  return Convert(existing_state);
+
 }

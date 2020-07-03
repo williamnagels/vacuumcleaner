@@ -7,7 +7,7 @@ class Map
 {
 public:
   Map(ros::NodeHandle& handle); ///< Create Map that will subscribe some topic to get occupancy grid updates from.
-  void OnMap(nav_msgs::OccupancyGrid::Ptr const& new_map); ///< Callback for occupancy grid updates
+  void OnMap(nav_msgs::OccupancyGrid::ConstPtr const& new_map); ///< Callback for occupancy grid updates
   void OnPositionChanged(Coordinates new_position); ///< callback if robot position changed a significantly enough distance
   enum class CellState  
   {
@@ -31,9 +31,10 @@ private:
   CellState Convert(GridValueType) const;
   GridValueType Convert(Map::CellState Value) const;
   GridDimensionType ToArrayIndex(CellIndex cell_index) const;
-  nav_msgs::OccupancyGrid::Ptr _map;
+  nav_msgs::OccupancyGrid _map;
   ros::Subscriber _map_subscriber; ///< Will subscribe to map updates
   ros::Publisher  _map_publisher; ///< Publish updated map
-  GridValueType _free_blocked_threshold = 70;
-  GridValueType _visited_threshold = 101;
+  GridValueType _free_blocked_threshold_cell_value = 70;
+  GridValueType _visited_threshold_cell_value = 101;
+  GridValueType _unknown_cell_value = -1;
 };
