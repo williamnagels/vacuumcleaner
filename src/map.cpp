@@ -3,6 +3,7 @@
 Map::Map(ros::NodeHandle& _node_handle)
   :_map_subscriber(_node_handle.subscribe(GetParameter(PARAM_VISITED_MAP_SUBSCRIBE_TOPIC, std::string("map")), 1000, &Map::OnMap, this))
   ,_map_publisher(_node_handle.advertise<nav_msgs::OccupancyGrid>(GetParameter(PARAM_VISITED_MAP_PUBLISHED_TOPIC, std::string("updated_map")), 1000))
+  ,_robot_radius(GetParameter(PARAM_ROBOT_RADIUS, PARAM_DEFAULT_ROBOT_RADIUS))
 {
 }
 
@@ -22,12 +23,26 @@ void Map::OnMap(nav_msgs::OccupancyGrid::ConstPtr const& new_map)
     [this](GridValueType n, GridValueType o){return Convert(n, o);});
 
 }
+void Map::UpdateVisited(CellIndex current_cell_index)
+{
+  uint64_t robot_radius_cells = std::ceil(_robot_radius / _map.info.resolution);
+
+  for (uint64_t y = 0; y< robot_radius_cells; y++)
+  {
+    for (int64_t x = -(robot_radius_cells/*-y*/); x< (int64_t)(robot_radius_cells/*-y*/); x++)
+    {
+      Set(current_cell_index + CellIndex{x, y}, CellState::Visited);
+      Set(current_cell_index + CellIndex{x, -y}, CellState::Visited);
+    }
+  }
+
+}
 void Map::OnPositionChanged(Coordinates position)
 {
   if (not _map.info.height) return;
 
   CellIndex cell_index = Get(position);
-  Set(cell_index, CellState::Visited);
+  UpdateVisited(cell_index);
 
   _map_publisher.publish(_map);
 }

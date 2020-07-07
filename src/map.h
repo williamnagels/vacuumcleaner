@@ -31,10 +31,12 @@ private:
   CellState Convert(GridValueType) const;
   GridValueType Convert(Map::CellState Value) const;
   GridDimensionType ToArrayIndex(CellIndex cell_index) const;
+  void UpdateVisited(CellIndex current_cell_index);
   nav_msgs::OccupancyGrid _map;
   ros::Subscriber _map_subscriber; ///< Will subscribe to map updates
   ros::Publisher  _map_publisher; ///< Publish updated map
   GridValueType _free_blocked_threshold_cell_value = 70;
   GridValueType _visited_threshold_cell_value = 101;
   GridValueType _unknown_cell_value = -1;
+  double _robot_radius;
 };

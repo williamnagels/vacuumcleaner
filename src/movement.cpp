@@ -7,7 +7,7 @@ Movement::Movement(PoseGenerator& generator, PositionChangedCallback position_ch
     : _client("move_base", true)
     , _tf_listener(_tf_buffer)	
     , _distance_before_scheduling_new_goal(0.1)
-    , _distance_before_position_changed_callback(0.05)
+    , _distance_before_position_changed_callback(0.02)
     , _generator(generator)
     , _position_changed_callback(position_changed_callback)
 {
@@ -24,15 +24,15 @@ void Movement::FeedbackCallback(move_base_msgs::MoveBaseFeedbackConstPtr const& 
   Eigen::Vector2d v1{feedback->base_position.pose.position.x, feedback->base_position.pose.position.y};
   Eigen::Vector2d v2{_active_goal.target_pose.pose.position.x, _active_goal.target_pose.pose.position.y};
 
-  double remaining_distance_to_travel = (v1 - v2).array().square().sum();
-  
-  //ROS_INFO_STREAM("feedback: "<<remaining_distance_to_travel);
+  double remaining_distance_to_travel = std::sqrt((v1 - v2).array().square().sum());
+
+  ROS_INFO_STREAM("current position: "<<feedback->base_position.pose.position << " active goal: "<< _active_goal.target_pose.pose.position<< " distance: "<<remaining_distance_to_travel);
   if (remaining_distance_to_travel < _distance_before_scheduling_new_goal)
   {
-    MoveTo(_generator.Generate());
+   MoveTo(_generator.Generate());
   } 
 
-  double distance_traveled_since_known_position = (v1 - _last_known_position).array().square().sum();
+  double distance_traveled_since_known_position = std::sqrt((v1 - _last_known_position).array().square().sum());
   
   if (distance_traveled_since_known_position > _distance_before_position_changed_callback)
   {
@@ -53,6 +53,7 @@ void Movement::MoveTo(Pose const& pose)
    quaternion.normalize();
    tf2::convert(quaternion, _active_goal.target_pose.pose.orientation);
 
+  //_client.cancelAllGoals();
   _client.sendGoal(
     _active_goal, 
     MoveBaseClient::SimpleDoneCallback(), 
@@ -64,6 +65,8 @@ void Movement::MoveTo(Pose const& pose)
 Coordinates Movement::GetCurrentPosition()
 {
   geometry_msgs::TransformStamped map_transform;
+
+  
   try
   {
     map_transform = _tf_buffer.lookupTransform("map", "base_footprint", ros::Time(0));

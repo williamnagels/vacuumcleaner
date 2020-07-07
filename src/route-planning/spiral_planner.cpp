@@ -5,8 +5,8 @@
 
 
 SpiralPlanner::SpiralPlanner()
-    :_radius(GetParameter(PARAM_ROBOT_RADIUS, 0.1))
-    ,_goal_delta(M_PI/GetParameter(PARAM_SPIRAL_DELTA_DENOMINATOR, 8))
+    :_radius(GetParameter(PARAM_ROBOT_RADIUS, PARAM_DEFAULT_ROBOT_RADIUS))
+    ,_goal_delta(M_PI/GetParameter(PARAM_SPIRAL_DELTA_DENOMINATOR,PARAM_DEFAULT_SPIRAL_DELTA_DENOMINATOR))
 {
 }
 

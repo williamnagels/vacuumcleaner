@@ -4,5 +4,5 @@ vacuumcleaner:
     visited_map_publish_topic: "map_updated"
 
   algorithm:
-    spiral_delta_denominator: 8
+    spiral_delta_denominator: 16
   
