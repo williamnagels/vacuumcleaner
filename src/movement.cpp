@@ -5,7 +5,6 @@
 
 Movement::Movement(PoseGenerator& generator, PositionChangedCallback position_changed_callback)
     : _client("move_base", true)
-    , _tf_listener(_tf_buffer)	
     , _distance_before_scheduling_new_goal(0.1)
     , _distance_before_position_changed_callback(0.02)
     , _generator(generator)
@@ -19,6 +18,17 @@ Movement::Movement(PoseGenerator& generator, PositionChangedCallback position_ch
     MoveTo(_generator.Generate());
 }
 
+void  Movement::DoneCallback(actionlib::SimpleClientGoalState const& state, move_base_msgs::MoveBaseResultConstPtr const& result)
+{
+  ROS_INFO_STREAM("state: "<<state.toString());
+  ROS_INFO_STREAM("result: "<<*result);
+}
+
+void  Movement::ActiveCallback()
+{
+  ROS_INFO_STREAM("active?: ");
+}
+
 void Movement::FeedbackCallback(move_base_msgs::MoveBaseFeedbackConstPtr const& feedback)
 {
   Eigen::Vector2d v1{feedback->base_position.pose.position.x, feedback->base_position.pose.position.y};
@@ -26,7 +36,7 @@ void Movement::FeedbackCallback(move_base_msgs::MoveBaseFeedbackConstPtr const& 
 
   double remaining_distance_to_travel = std::sqrt((v1 - v2).array().square().sum());
 
-  ROS_INFO_STREAM("current position: "<<feedback->base_position.pose.position << " active goal: "<< _active_goal.target_pose.pose.position<< " distance: "<<remaining_distance_to_travel);
+  ROS_DEBUG_STREAM("current position: "<<feedback->base_position.pose.position << " active goal: "<< _active_goal.target_pose.pose.position<< " distance: "<<remaining_distance_to_travel);
   if (remaining_distance_to_travel < _distance_before_scheduling_new_goal)
   {
    MoveTo(_generator.Generate());
@@ -53,28 +63,10 @@ void Movement::MoveTo(Pose const& pose)
    quaternion.normalize();
    tf2::convert(quaternion, _active_goal.target_pose.pose.orientation);
 
-  //_client.cancelAllGoals();
   _client.sendGoal(
     _active_goal, 
-    MoveBaseClient::SimpleDoneCallback(), 
-    MoveBaseClient::SimpleActiveCallback(), 
-    std::bind(std::mem_fn(&Movement::FeedbackCallback), this, std::placeholders::_1)
+    std::bind(&Movement::DoneCallback, this, std::placeholders::_1, std::placeholders::_2), 
+    std::bind(&Movement::ActiveCallback, this),
+    std::bind(&Movement::FeedbackCallback, this, std::placeholders::_1)
     );
-}
-
-Coordinates Movement::GetCurrentPosition()
-{
-  geometry_msgs::TransformStamped map_transform;
-
-  
-  try
-  {
-    map_transform = _tf_buffer.lookupTransform("map", "base_footprint", ros::Time(0));
-    return { map_transform.transform.translation.x, map_transform.transform.translation.y};
-  }
-  catch (tf2::TransformException &ex) 
-  {
-    ROS_WARN("%s",ex.what());
-    return {std::numeric_limits<double>::min(), std::numeric_limits<double>::min()};
-  }
 }
