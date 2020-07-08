@@ -9,21 +9,14 @@
   
   <param name="robot_description" command="xacro '$(find vacuumcleaner)/config/vacuumcleaner_model/model.xacro' body_radius:=$(arg robot_radius)"/>
   
+  <node pkg="vacuumcleaner" name="server" type="server" output="screen" required="true"/> 
+  <node pkg="vacuumcleaner" name="client" type="client" output="screen" required="true"/>
 
-  
-  
-  <node pkg="vacuumcleaner" name="server" type="server" output="screen"> 
-    
-  </node>
-
-  <node pkg="vacuumcleaner" name="client" type="client" output="screen"/>
-
-
-  <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" ns="vacuumcleaner">
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" ns="vacuumcleaner" required="true">
     <param name="publish_frequency" type="double" value="30.0" />
   </node>
 
-  <node pkg="move_base" type="move_base" respawn="false" name="move_base">
+  <node pkg="move_base" type="move_base" respawn="false" name="move_base" required="true">
     <rosparam file="$(find vacuumcleaner)/config/costmap_common_params.yaml" command="load" ns="global_costmap" />
     <rosparam file="$(find vacuumcleaner)/config/costmap_common_params.yaml" command="load" ns="local_costmap"/>
     <rosparam file="$(find vacuumcleaner)/config/local_costmap_params.yaml" command="load" />
@@ -38,7 +31,7 @@
     
     </node>
 
-  <node pkg="gmapping" type="slam_gmapping" name="gmapping_thing">
+  <node pkg="gmapping" type="slam_gmapping" name="gmapping" required="true">
     <param name="base_frame" value="base_footprint"/>
     <param name="odom_frame" value="odom"/>
   </node>
