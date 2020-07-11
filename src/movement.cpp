@@ -26,7 +26,6 @@ void  Movement::DoneCallback(actionlib::SimpleClientGoalState const& state, move
 
 void  Movement::ActiveCallback()
 {
-  ROS_INFO_STREAM("active?: ");
 }
 
 void Movement::FeedbackCallback(move_base_msgs::MoveBaseFeedbackConstPtr const& feedback)
