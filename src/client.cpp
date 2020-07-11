@@ -33,6 +33,6 @@ int main (int argc, char **argv)
 
     ROS_INFO("Action did not finish before the time out.");
   }
-
+  ros::spin();
   return 0;
 }
