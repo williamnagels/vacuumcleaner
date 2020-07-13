@@ -4,6 +4,7 @@
 
   <!-- Height of center disk (meters)-->
   <xacro:property name="body_height" value="0.04"/>
+  <xacro:property name="wheel_height" value="0.018" />
   <xacro:macro name="sphere_inertia" params="m r">
     <inertial>
       <mass value="${m}"/>
@@ -25,19 +26,19 @@
     </inertial>
   </xacro:macro>
 
-  <xacro:macro name="wheel" params="suffix radius xoffset yoffset zoffset">
+  <xacro:macro name="wheel" params="suffix radius length xoffset yoffset zoffset">
      <link name="link_${suffix}_wheel">
-     <xacro:disk_inertia mass="0.250" radius="${radius}" height="0.018" orientation="0 1.5757 1.5757"/>
+     <xacro:disk_inertia mass="0.250" radius="${radius}" height="${length}" orientation="0 1.5757 1.5757"/>
      <collision name="link_${suffix}_wheel_collision">
         <origin rpy="0 1.5757 1.5757" xyz="0 0 0" />
         <geometry>
-          <cylinder length="0.018" radius="${radius}" />
+          <cylinder length="${length}" radius="${radius}" />
         </geometry>
      </collision>
       <visual name="link_${suffix}_wheel_visual">
         <origin rpy="0 1.5757 1.5757" xyz="0 0 0" />
         <geometry>
-          <cylinder length="0.018" radius="${radius}" />
+          <cylinder length="${length}" radius="${radius}" />
         </geometry>
       </visual>
     </link>
@@ -59,8 +60,8 @@
     </joint>
   </xacro:macro>
 
-  <xacro:wheel suffix="left" radius="0.030" xoffset="0" yoffset="${$(arg body_radius)}" zoffset="-0.055"/>
-  <xacro:wheel suffix="right" radius="0.030" xoffset="0" yoffset="${-$(arg body_radius)}" zoffset="-0.055"/>
+  <xacro:wheel suffix="left" radius="0.030" length="${wheel_height}" xoffset="0" yoffset="${$(arg body_radius)-wheel_height/2}" zoffset="-0.055"/>
+  <xacro:wheel suffix="right" radius="0.030" length="${wheel_height}" xoffset="0" yoffset="${-$(arg body_radius)+wheel_height/2}" zoffset="-0.055"/>
   <!--<link name="dummy" />
   <joint name="dummy_joint" type="fixed">
      <parent link="dummy"/>
@@ -163,6 +164,7 @@
     <parent link="base_footprint" />
     <origin xyz="0 0 0.051" />
   </joint>
+
   <gazebo reference="base_scan">
     <sensor name="raycaster" type="ray">
       <always_on>true</always_on>
@@ -189,8 +191,66 @@
         </noise>
       </ray>
       <plugin name="laserscan" filename="libgazebo_ros_laser.so">
-	<topicName>scan</topicName>
-	<frameName>base_scan</frameName>
+	    <topicName>scan</topicName>
+	    <frameName>base_scan</frameName>
+      </plugin>
+   </sensor>
+  </gazebo>
+
+
+  <link name="front_scan">
+    <visual>
+      <geometry>
+        <sphere radius="0.001" />
+      </geometry>
+      <material name="black" />
+    </visual>
+    <collision>
+      <geometry>
+        <sphere radius="0.001" />
+      </geometry>
+    </collision>
+
+    <inertial>
+      <mass value="0.01" />
+      <inertia  ixx="0.001" ixy="0.0"  ixz="0.0" iyy="0.001"  iyz="0.0"  izz="0.001" /> 
+    </inertial>
+
+  </link>
+  <joint name="front_scan_joint" type="fixed">
+    <child link="front_scan" />
+    <parent link="base_footprint" />
+    <origin xyz="$(arg body_radius) 0 0" />
+  </joint>
+ 
+ <gazebo reference="front_scan">
+    <sensor name="raycaster_front_scan" type="ray">
+      <always_on>true</always_on>
+      <visualize>true</visualize>
+      <update_rate>5</update_rate>
+      <ray>
+        <scan>
+          <horizontal>
+            <samples>1</samples>
+            <resolution>1.000000</resolution>
+            <min_angle>0.000000</min_angle>
+            <max_angle>6.280000</max_angle>
+          </horizontal>
+        </scan>
+        <range>
+          <min>0.120000</min>
+          <max>3.5</max>
+          <resolution>0.015000</resolution>
+        </range>
+        <noise>
+          <type>gaussian</type>
+          <mean>0.0</mean>
+          <stddev>0.01</stddev>
+        </noise>
+      </ray>
+      <plugin name="laserscan" filename="libgazebo_ros_laser.so">
+    	<topicName>distance_scan</topicName>
+	    <frameName>front_scan</frameName>
       </plugin>
    </sensor>
   </gazebo>
