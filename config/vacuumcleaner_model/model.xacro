@@ -74,12 +74,27 @@
 	      <cylinder length="${body_height}" radius="$(arg body_radius)" />
       </geometry>
     </visual>
-    <collision>
+    <collision name="base_footprint_collision">
       <geometry>
 	      <cylinder length="${body_height}" radius="$(arg body_radius)" />
       </geometry>
     </collision>
- </link>
+  </link>
+  <gazebo reference="base_footprint">
+    <sensor name='bumper_contact' type='contact'>
+      <plugin name="gazebo_ros_bumper_controller" filename="libgazebo_ros_bumper.so"> 
+        <bumperTopicName>bumper_vals</bumperTopicName>
+        <frameName>map</frameName>
+        <alwaysOn>true</alwaysOn>
+        <updateRate>4.0</updateRate>
+      </plugin>
+      <always_on>true</always_on>
+      <update_rate>4.0</update_rate>
+      <contact>
+        <collision>base_footprint_collision_collision</collision>
+      </contact>
+    </sensor>
+  </gazebo>
 
    <link name="caster_wheel">
     <visual>
@@ -165,6 +180,8 @@
     <origin xyz="0 0 0.051" />
   </joint>
 
+
+
   <gazebo reference="base_scan">
     <sensor name="raycaster" type="ray">
       <always_on>true</always_on>
@@ -193,64 +210,6 @@
       <plugin name="laserscan" filename="libgazebo_ros_laser.so">
 	    <topicName>scan</topicName>
 	    <frameName>base_scan</frameName>
-      </plugin>
-   </sensor>
-  </gazebo>
-
-
-  <link name="front_scan">
-    <visual>
-      <geometry>
-        <sphere radius="0.001" />
-      </geometry>
-      <material name="black" />
-    </visual>
-    <collision>
-      <geometry>
-        <sphere radius="0.001" />
-      </geometry>
-    </collision>
-
-    <inertial>
-      <mass value="0.01" />
-      <inertia  ixx="0.001" ixy="0.0"  ixz="0.0" iyy="0.001"  iyz="0.0"  izz="0.001" /> 
-    </inertial>
-
-  </link>
-  <joint name="front_scan_joint" type="fixed">
-    <child link="front_scan" />
-    <parent link="base_footprint" />
-    <origin xyz="$(arg body_radius) 0 0" />
-  </joint>
- 
- <gazebo reference="front_scan">
-    <sensor name="raycaster_front_scan" type="ray">
-      <always_on>true</always_on>
-      <visualize>true</visualize>
-      <update_rate>5</update_rate>
-      <ray>
-        <scan>
-          <horizontal>
-            <samples>1</samples>
-            <resolution>1.000000</resolution>
-            <min_angle>0.000000</min_angle>
-            <max_angle>6.280000</max_angle>
-          </horizontal>
-        </scan>
-        <range>
-          <min>0.120000</min>
-          <max>3.5</max>
-          <resolution>0.015000</resolution>
-        </range>
-        <noise>
-          <type>gaussian</type>
-          <mean>0.0</mean>
-          <stddev>0.01</stddev>
-        </noise>
-      </ray>
-      <plugin name="laserscan" filename="libgazebo_ros_laser.so">
-    	<topicName>distance_scan</topicName>
-	    <frameName>front_scan</frameName>
       </plugin>
    </sensor>
   </gazebo>
