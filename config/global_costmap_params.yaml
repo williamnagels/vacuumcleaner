@@ -5,6 +5,6 @@ global_costmap:
   update_frequency: 1.0
   static_map: false
   rolling_window: true
-  width: 10.0
-  height: 10.0
+  width: 1.0
+  height: 1.0
   resolution: 0.4

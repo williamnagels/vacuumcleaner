@@ -1,14 +1,15 @@
 recovery_behavior_enabled: false
-max_planning_retries: 0
 clearing_rotation_allowed: false
-oscillation_timeout: 5
-oscillation_distance: 0.2
+max_planning_retries: 0
+oscillation_timeout: 3
+oscillation_distance: 0.05
 
 TrajectoryPlannerROS:
-  max_vel_x: 0.2 # m/s 
-  min_vel_x: 0.01 # minimum to send to base m/s
-  max_vel_y: 0.2 # m/s 
-  min_vel_y: 0.01 # minimum to send to base m/s
+  max_vel_x: 0.8 # m/s 
+  min_vel_x: -0.8 # minimum to send to base m/s
+  max_vel_y: 0.8 # m/s 
+  min_vel_y: -0.8
+   # minimum to send to base m/s
 
   acc_lim_theta: 1.0 # m/s²
   acc_lim_x: 1.0 # m/s²
