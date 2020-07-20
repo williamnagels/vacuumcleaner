@@ -1,20 +1,7 @@
-recovery_behavior_enabled: false
-clearing_rotation_allowed: false
-max_planning_retries: 0
-oscillation_timeout: 3
-oscillation_distance: 0.05
+
+base_global_planner: "carrot_planner/CarrotPlanner"
 
 TrajectoryPlannerROS:
-  max_vel_x: 0.8 # m/s 
-  min_vel_x: -0.8 # minimum to send to base m/s
-  max_vel_y: 0.8 # m/s 
-  min_vel_y: -0.8
-   # minimum to send to base m/s
-
-  acc_lim_theta: 1.0 # m/s²
-  acc_lim_x: 1.0 # m/s²
-  acc_lim_y: 1.0 # m/s²
-  
   yaw_goal_tolerance: 6.28
-  xy_goal_tolerance: 0.01
   holonomic_robot: false
+  dwa: true

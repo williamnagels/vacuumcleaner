@@ -5,3 +5,4 @@ inflation_radius: 0.02 #All paths that stay away n-meters from obstacle have equ
 observation_sources: laser_scan_sensor
 
 laser_scan_sensor: {sensor_frame: base_scan, data_type: LaserScan, topic: scan, marking: true, clearing: true}
+resolution: 0.01
