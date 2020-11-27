@@ -1,8 +1,0 @@
-vacuumcleaner:
-  robot:
-    map_subscribe_topic: "map"
-    visited_map_publish_topic: "map_updated"
-
-  algorithm:
-    spiral_delta_denominator: 16
-  

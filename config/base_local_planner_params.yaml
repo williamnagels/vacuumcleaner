@@ -1,7 +1,0 @@
-
-base_global_planner: "carrot_planner/CarrotPlanner"
-
-TrajectoryPlannerROS:
-  yaw_goal_tolerance: 6.28
-  holonomic_robot: false
-  dwa: true

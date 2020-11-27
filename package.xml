@@ -1,23 +1,18 @@
 <?xml version="1.0"?>
-<package format="2">
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
   <name>vacuumcleaner</name>
   <version>0.0.0</version>
-  <description>The vacuumcleaner package</description>
-  <maintainer email="william.nagels@gmail.com">William Nagels</maintainer>
-  <author email="william.nagels@gmail.com">William Nagels</author>
-  <url type="repository">http://github.com/williamnagels/vacuum-cleaner</url>
-  
-  <license>Boost</license>
-  <buildtool_depend>catkin</buildtool_depend>
-  <build_depend>rospy</build_depend>
-  <build_depend>std_msgs</build_depend>
-  <build_depend>actionlib_msgs</build_depend>
-  <build_export_depend>rospy</build_export_depend>
-  <build_export_depend>std_msgs</build_export_depend>
-  <exec_depend>rospy</exec_depend>
-  <exec_depend>std_msgs</exec_depend>
-  <exec_depend>actionlib_msgs</exec_depend>
-  <exec_depend>message_generation</exec_depend>
+  <description>TODO: Package description</description>
+  <maintainer email="william@todo.todo">william</maintainer>
+  <license>TODO: License declaration</license>
+
+  <test_depend>ament_copyright</test_depend>
+  <test_depend>ament_flake8</test_depend>
+  <test_depend>ament_pep257</test_depend>
+  <test_depend>python3-pytest</test_depend>
+
   <export>
+    <build_type>ament_python</build_type>
   </export>
 </package>

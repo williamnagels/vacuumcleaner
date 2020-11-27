@@ -1,9 +1,0 @@
-#goal definition
-int32 zone
----
-#result definition
-int32 number_of_tiles_visited
----
-#feedback
-int32 number_of_tiles_visited
-int32 number_of_tiles_to_visit
