@@ -18,6 +18,7 @@ def generate_launch_description():
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource([get_package_share_directory("gazebo_ros"), '/launch/gazebo.launch.py']),
             condition=IfCondition(LaunchConfiguration('simulation')),
+            launch_arguments=[("world",[get_package_share_directory("vacuumcleaner"), '/', LaunchConfiguration('world')])] #"/home/william/ros_ws/src/vacuumcleaner/models/worlds/square_2m"
         ),
         Node(executable='rviz2'),
         Node(package="vacuumcleaner", executable="spawn_entity", arguments=["0.0", "0.0", "0.0"])
