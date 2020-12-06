@@ -24,13 +24,13 @@ def main():
         client.wait_for_service()
         node.get_logger().info("...connected!")
 
-    sdf_file_path = os.path.join(get_package_share_directory("vacuumcleaner"), "robot.sdf")
+    sdf_file_path = os.path.join(get_package_share_directory("vacuumcleaner"), "robot.urdf")
 
     # Set data for request
     request = SpawnEntity.Request()
     request.name = "spawn entity"
     request.xml = open(sdf_file_path, 'r').read()
-    request.robot_namespace = "vacuum-cleaner"
+    request.robot_namespace = "vacuumcleaner"
     request.initial_pose.position.x = float(argv[0])
     request.initial_pose.position.y = float(argv[1])
     request.initial_pose.position.z = float(argv[2])
