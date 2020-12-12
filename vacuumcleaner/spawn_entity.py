@@ -41,8 +41,7 @@ def main():
     if future.result() is not None:
         print('response: %r' % future.result())
     else:
-        raise RuntimeError(
-            'exception while calling service: %r' % future.exception())
+        raise RuntimeError('exception while calling service: %r' % future.exception())
 
     node.get_logger().info("Done! Shutting down node.")
     node.destroy_node()

@@ -16,6 +16,12 @@ def xacro_to_urdf(xacro_name, urdf_name):
     out.write(doc.toprettyxml(indent='  '))
 
 
+# https://stackoverflow.com/questions/1432126/how-to-get-content-of-a-small-ascii-file-in-python
+def file_get_contents(filename):
+    with open(filename) as f:
+        return f.read()
+
+
 def generate_launch_description():
     xacro_to_urdf("robot.xacro", "robot.urdf")
 
@@ -30,6 +36,13 @@ def generate_launch_description():
             condition=IfCondition(LaunchConfiguration('simulation')),
             launch_arguments=[("world",[get_package_share_directory("vacuumcleaner"), '/', LaunchConfiguration('world')])] #"/home/william/ros_ws/src/vacuumcleaner/models/worlds/square_2m"
         ),
+        Node(
+            package='robot_state_publisher',
+            executable='robot_state_publisher',
+            name='robot_state_publisher',
+            output='screen',
+            parameters=[{'use_sim_time': True,
+                         'robot_description': file_get_contents(get_package_share_directory("vacuumcleaner")+'/'+"robot.urdf")}]),
         Node(executable='rviz2'),
         Node(package="vacuumcleaner", executable="spawn_entity", arguments=["0.0", "0.0", "0.0"])
     ])
