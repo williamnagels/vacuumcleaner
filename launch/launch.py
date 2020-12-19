@@ -41,8 +41,10 @@ def generate_launch_description():
             executable='robot_state_publisher',
             name='robot_state_publisher',
             output='screen',
-            parameters=[{'use_sim_time': True,
-                         'robot_description': file_get_contents(get_package_share_directory("vacuumcleaner")+'/'+"robot.urdf")}]),
-        Node(executable='rviz2'),
+            parameters=[{'use_tf_static': False,
+                         'use_sim_time': True,
+                         'robot_description': file_get_contents(get_package_share_directory("vacuumcleaner")+'/'+"robot.urdf")}],
+            remappings=[('/joint_states', '/vacuumcleaner/joint_states')]),
+        Node(executable='rviz2', package='rviz2', arguments=[' -d rviz']),
         Node(package="vacuumcleaner", executable="spawn_entity", arguments=["0.0", "0.0", "0.0"])
     ])
