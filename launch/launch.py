@@ -25,12 +25,25 @@ def file_get_contents(filename):
 def generate_launch_description():
     xacro_to_urdf("robot.xacro", "robot.urdf")
 
+    joint_state_publisher_node = Node(
+        package='joint_state_publisher',
+        executable='joint_state_publisher',
+        name='joint_state_publisher',
+    )
+
+    nav2_launchfile = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([get_package_share_directory("nav2_bringup"), '/launch/navigation_launch.py']),
+    )
+
+    model_path = file_get_contents(get_package_share_directory("vacuumcleaner")+'/'+"robot.urdf")
+
     return LaunchDescription([
         DeclareLaunchArgument('simulation',
                               default_value="false",
                               description='Use gazebo to simulate robot i.s.o. physical robot. Requires "gazebo_ros" '
                                           'ros package to be installed. Supply world file using "world:=<file>"'),
-        
+        nav2_launchfile,
+        joint_state_publisher_node,
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource([get_package_share_directory("gazebo_ros"), '/launch/gazebo.launch.py']),
             condition=IfCondition(LaunchConfiguration('simulation')),
@@ -43,8 +56,9 @@ def generate_launch_description():
             output='screen',
             parameters=[{'use_tf_static': False,
                          'use_sim_time': True,
-                         'robot_description': file_get_contents(get_package_share_directory("vacuumcleaner")+'/'+"robot.urdf")}],
+                         'robot_description': model_path}],
             remappings=[('/joint_states', '/vacuumcleaner/joint_states')]),
+
         Node(executable='rviz2', package='rviz2', arguments=[' -d rviz']),
         Node(package="vacuumcleaner", executable="spawn_entity", arguments=["0.0", "0.0", "0.0"])
     ])
