@@ -159,7 +159,7 @@
       <joint_name>joint_right_wheel</joint_name>
     </plugin>
   </gazebo>
-  <link name="base_scan">
+  <link name="map">
     <visual>
       <geometry>
         <sphere radius="0.05" />
@@ -180,15 +180,15 @@
     </inertial>
 
   </link>
-  <joint name="base_scan_joint" type="fixed">
-    <child link="base_scan" />
+  <joint name="map_joint" type="fixed">
+    <child link="map" />
     <parent link="base_link" />
     <origin xyz="0 0 0.051" />
   </joint>
 
 
 
-  <gazebo reference="base_scan">
+  <gazebo reference="map">
     <sensor name="raycaster" type="ray">
       <always_on>true</always_on>
       <visualize>true</visualize>
@@ -218,7 +218,7 @@
           <argument>--remap ~/out:=scan</argument>
         </ros>
         <output_type>sensor_msgs/LaserScan</output_type>
-        <frame_name>base_scan</frame_name>
+        <frame_name>map</frame_name>
       </plugin>
    </sensor>
 
