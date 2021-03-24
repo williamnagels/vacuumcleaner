@@ -54,7 +54,7 @@
    <joint name="joint_${suffix}_wheel" type="continuous">
        <origin rpy="0 0 0" xyz="${xoffset} ${yoffset} ${zoffset}" />
        <child link="link_${suffix}_wheel" />
-       <parent link="base_footprint" />
+       <parent link="base_link" />
        <axis rpy="0 0 0" xyz="0 1 0" />
        <!--<limit effort="10000" velocity="1000" />-->
     </joint>
@@ -65,23 +65,23 @@
   <!--<link name="dummy" />
   <joint name="dummy_joint" type="fixed">
      <parent link="dummy"/>
-     <child link="base_footprint"/>
+     <child link="base_link"/>
   </joint>-->
-  <link name="base_footprint">
+  <link name="base_link">
     <xacro:disk_inertia mass="0.850" radius="$(arg body_radius)" height="${body_height}" orientation="0 0 0" />
     <visual>
       <geometry>
 	      <cylinder length="${body_height}" radius="$(arg body_radius)" />
       </geometry>
     </visual>
-    <collision name="base_footprint_collision">
+    <collision name="base_link_collision">
       <geometry>
 	      <cylinder length="${body_height}" radius="$(arg body_radius)" />
       </geometry>
     </collision>
   </link>
   <!--
-  <gazebo reference="base_footprint">
+  <gazebo reference="base_link">
     <sensor name='bumper_contact' type='contact'>
       <plugin name="gazebo_ros_bumper_controller" filename="libgazebo_ros_bumper.so">
         <bumperTopicName>bumper_vals</bumperTopicName>
@@ -92,7 +92,7 @@
       <always_on>true</always_on>
       <update_rate>4.0</update_rate>
       <contact>
-        <collision>base_footprint_collision_collision</collision>
+        <collision>base_link_collision_collision</collision>
       </contact>
     </sensor>
   </gazebo>
@@ -126,12 +126,12 @@
 
   <joint name="caster_wheel_joint" type="fixed">
     <axis xyz="0 1 0" rpy="0 0 0" />
-    <parent link="base_footprint"/>
+    <parent link="base_link"/>
     <child link="caster_wheel"/>
     <origin rpy="0 0 0" xyz="${$(arg body_radius)-0.03} 0 -0.055" />
   </joint>
   <gazebo>
-   <plugin name="differential_drive" filename="libgazebo_ros_diff_drive.so">
+   <plugin name="differential_drive_controller" filename="libgazebo_ros_diff_drive.so">
       <ros_debug_level>na</ros_debug_level>
       <update_rate>30</update_rate>
       <left_joint>joint_left_wheel</left_joint>
@@ -144,9 +144,9 @@
       <publish_odom_tf>true</publish_odom_tf>
       <publish_wheel_tf>false</publish_wheel_tf>
       <odometry_topic>/odom</odometry_topic>
-      <odometry_frame>/odom</odometry_frame>
-      <robotBase_frame>/base_footprint</robotBase_frame>
       <wheel_acceleration>1.0</wheel_acceleration>
+      <odometry_frame>/odom</odometry_frame>
+      <robot_base_frame>/base_link</robot_base_frame>
     </plugin>
   </gazebo>
   <gazebo>
@@ -182,7 +182,7 @@
   </link>
   <joint name="base_scan_joint" type="fixed">
     <child link="base_scan" />
-    <parent link="base_footprint" />
+    <parent link="base_link" />
     <origin xyz="0 0 0.051" />
   </joint>
 
