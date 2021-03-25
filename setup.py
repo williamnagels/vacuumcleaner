@@ -12,7 +12,6 @@ setup(
         ('share/' + package_name, ['package.xml']),
         ('share/' + package_name, glob('launch/launch.py')),
         ('share/' + package_name, glob('launch/rviz')),
-        #('share/' + package_name, glob('models/robot.sdf')),
         ('share/' + package_name, glob('models/robot.xacro')),
         ('share/' + package_name, glob('models/worlds/square_2m'))
     ],
