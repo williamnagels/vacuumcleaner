@@ -40,6 +40,17 @@ def generate_launch_description():
     )
     model_path = file_get_contents(get_package_share_directory("vacuumcleaner")+'/'+"robot.urdf")
 
+    state_publisher_node = Node(
+        package='robot_state_publisher',
+        executable='robot_state_publisher',
+        name='robot_state_publisher',
+        output='screen',
+        parameters=[{'use_tf_static': False,
+                     'use_sim_time': True,
+                     'robot_description': model_path}],
+        remappings=[('/joint_states', '/vacuumcleaner/joint_states')])
+
+
     return LaunchDescription([
         DeclareLaunchArgument('simulation',
                               default_value="false",
@@ -47,22 +58,15 @@ def generate_launch_description():
                                           'ros package to be installed. Supply world file using "world:=<file>"'),
         #nav2_launchfile,
         slam_launchfile,
-        joint_state_publisher_node,
+        state_publisher_node,
+        #joint_state_publisher_node,
 
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource([get_package_share_directory("gazebo_ros"), '/launch/gazebo.launch.py']),
             condition=IfCondition(LaunchConfiguration('simulation')),
             launch_arguments=[("world",[get_package_share_directory("vacuumcleaner"), '/', LaunchConfiguration('world')])] #"/home/william/ros_ws/src/vacuumcleaner/models/worlds/square_2m"
         ),
-        Node(
-            package='robot_state_publisher',
-            executable='robot_state_publisher',
-            name='robot_state_publisher',
-            output='screen',
-            parameters=[{'use_tf_static': False,
-                         'use_sim_time': True,
-                         'robot_description': model_path}],
-            remappings=[('/joint_states', '/vacuumcleaner/joint_states')]),
+
 
         Node(executable='rviz2', package='rviz2', arguments=[' -d rviz']),
         Node(package="vacuumcleaner", executable="spawn_entity", arguments=["0.0", "0.0", "0.0"])
