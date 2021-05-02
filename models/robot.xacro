@@ -62,11 +62,13 @@
 
   <xacro:wheel suffix="left" radius="0.030" length="${wheel_height}" xoffset="0" yoffset="${$(arg body_radius)-wheel_height/2}" zoffset="-0.055"/>
   <xacro:wheel suffix="right" radius="0.030" length="${wheel_height}" xoffset="0" yoffset="${-$(arg body_radius)+wheel_height/2}" zoffset="-0.055"/>
-  <!--<link name="base_footprint" />
-  <joint name="base_footprint_joint" type="fixed">
-     <parent link="base_footprint"/>
+
+  <link name="virtual_base_link" />
+  <joint name="virtual_base_link_joint" type="fixed">
+     <parent link="virtual_base_link"/>
      <child link="base_link"/>
-  </joint>-->
+  </joint>
+
   <link name="base_link">
     <xacro:disk_inertia mass="0.850" radius="$(arg body_radius)" height="${body_height}" orientation="0 0 0" />
     <visual>
@@ -146,7 +148,7 @@
       <odometry_topic>odom</odometry_topic>
       <wheel_acceleration>1.0</wheel_acceleration>
       <odometry_frame>odom</odometry_frame>
-      <robot_base_frame>base_link</robot_base_frame>
+      <robot_base_frame>virtual_base_link</robot_base_frame>
     </plugin>
   </gazebo>
   <gazebo>
@@ -159,7 +161,7 @@
       <joint_name>joint_right_wheel</joint_name>
     </plugin>
   </gazebo>
-  <link name="map">
+  <link name="scan_link">
     <visual>
       <geometry>
         <sphere radius="0.05" />
@@ -180,12 +182,12 @@
     </inertial>
 
   </link>
-  <joint name="map_joint" type="fixed">
-    <child link="map" />
+  <joint name="scan_link_joint" type="fixed">
+    <child link="scan_link" />
     <parent link="base_link" />
     <origin xyz="0 0 0.051" />
   </joint>
-  <gazebo reference="map">
+  <gazebo reference="scan_link">
     <sensor name="raycaster" type="ray">
       <always_on>true</always_on>
       <visualize>true</visualize>
@@ -215,7 +217,7 @@
             <argument>~/out:=/scan</argument>
         </ros>
         <output_type>sensor_msgs/LaserScan</output_type>
-        <frame_name>map</frame_name>
+        <frame_name>scan_link</frame_name>
       </plugin>
    </sensor>
   </gazebo>

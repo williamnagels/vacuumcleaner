@@ -57,10 +57,7 @@ def generate_launch_description():
                               description='Use gazebo to simulate robot i.s.o. physical robot. Requires "gazebo_ros" '
                                           'ros package to be installed. Supply world file using "world:=<file>"'),
         #nav2_launchfile,
-        slam_launchfile,
         state_publisher_node,
-        #joint_state_publisher_node,
-
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource([get_package_share_directory("gazebo_ros"), '/launch/gazebo.launch.py']),
             condition=IfCondition(LaunchConfiguration('simulation')),
@@ -69,5 +66,7 @@ def generate_launch_description():
 
 
         Node(executable='rviz2', package='rviz2', arguments=[' -d rviz']),
-        Node(package="vacuumcleaner", executable="spawn_entity", arguments=["0.0", "0.0", "0.0"])
+        Node(package="vacuumcleaner", executable="spawn_entity", arguments=["0.0", "0.0", "0.0"]),
+        slam_launchfile,
+
     ])
