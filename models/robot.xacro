@@ -195,16 +195,14 @@
       <ray>
         <scan>
           <horizontal>
-            <samples>360</samples>
-            <resolution>1</resolution>
+            <samples>180</samples>
             <min_angle>0.000000</min_angle>
-            <max_angle>6.280000</max_angle>
+            <max_angle>6.28318530718</max_angle> <!--6.2831.. /181 = 0.0349; cross check with number slam.yaml-->
           </horizontal>
         </scan>
         <range>
           <min>0.120000</min>
           <max>4</max>
-          <resolution>0.015000</resolution>
         </range>
         <noise>
           <type>gaussian</type>

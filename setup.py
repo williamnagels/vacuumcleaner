@@ -12,7 +12,9 @@ setup(
         ('share/' + package_name, ['package.xml']),
         ('share/' + package_name, glob('launch/launch.py')),
         ('share/' + package_name, glob('launch/launch_slam.py')),
+        ('share/' + package_name, glob('launch/launch_nav2.py')),
         ('share/' + package_name, glob('config/slam.yaml')),
+        ('share/' + package_name, glob('config/nav2.yaml')),
         ('share/' + package_name, glob('launch/rviz')),
         ('share/' + package_name, glob('models/robot.xacro')),
         ('share/' + package_name, glob('models/worlds/square_2m'))

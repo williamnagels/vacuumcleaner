@@ -32,13 +32,14 @@ def generate_launch_description():
     )
 
     nav2_launchfile = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([get_package_share_directory("nav2_bringup"), '/launch/navigation_launch.py']),
+        PythonLaunchDescriptionSource([get_package_share_directory("vacuumcleaner"), '/launch_nav2.py']),
+        launch_arguments={'use_sim_time': 'True'}.items()
     )
 
     slam_launchfile = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([get_package_share_directory("vacuumcleaner"), '/launch_slam.py']),
     )
-    model_path = file_get_contents(get_package_share_directory("vacuumcleaner")+'/'+"robot.urdf")
+    model_path = file_get_contents(get_package_share_directory("vacuumcleaner")+"/robot.urdf")
 
     state_publisher_node = Node(
         package='robot_state_publisher',
@@ -56,7 +57,7 @@ def generate_launch_description():
                               default_value="false",
                               description='Use gazebo to simulate robot i.s.o. physical robot. Requires "gazebo_ros" '
                                           'ros package to be installed. Supply world file using "world:=<file>"'),
-        #nav2_launchfile,
+        nav2_launchfile,
         state_publisher_node,
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource([get_package_share_directory("gazebo_ros"), '/launch/gazebo.launch.py']),
