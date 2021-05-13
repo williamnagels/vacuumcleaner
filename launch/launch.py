@@ -40,7 +40,8 @@ def generate_launch_description():
         PythonLaunchDescriptionSource([get_package_share_directory("vacuumcleaner"), '/launch_slam.py']),
     )
     model_path = file_get_contents(get_package_share_directory("vacuumcleaner")+"/robot.urdf")
-
+    rviz_path = get_package_share_directory("vacuumcleaner") + "/rviz.rviz"
+    print("using rviz file: "+ rviz_path)
     state_publisher_node = Node(
         package='robot_state_publisher',
         executable='robot_state_publisher',
@@ -66,7 +67,7 @@ def generate_launch_description():
         ),
 
 
-        Node(executable='rviz2', package='rviz2', arguments=[' -d rviz']),
+        Node(executable='rviz2', package='rviz2', arguments=['-d'+rviz_path]),
         Node(package="vacuumcleaner", executable="spawn_entity", arguments=["0.0", "0.0", "0.0"]),
         slam_launchfile,
 
