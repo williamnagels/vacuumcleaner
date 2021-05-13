@@ -30,7 +30,6 @@ def main():
     request = SpawnEntity.Request()
     request.name = "spawn entity"
     request.xml = open(sdf_file_path, 'r').read()
-    request.robot_namespace = "vacuumcleaner"
     request.initial_pose.position.x = float(argv[0])
     request.initial_pose.position.y = float(argv[1])
     request.initial_pose.position.z = float(argv[2])
