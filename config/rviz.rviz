@@ -11,6 +11,8 @@ Panels:
         - /LaserScan1
         - /LaserScan1/Topic1
         - /Costmaps1
+        - /Costmaps1/local1
+        - /Costmaps1/global1
       Splitter Ratio: 0.5264706015586853
     Tree Height: 784
   - Class: rviz_common/Selection
@@ -72,20 +74,19 @@ Visualization Manager:
       Tree:
         map:
           odom:
-            {}
-        virtual_base_link:
-          base_link:
-            caster_wheel:
-              {}
-            scan_link:
-              {}
+            virtual_base_link:
+              base_link:
+                caster_wheel:
+                  {}
+                scan_link:
+                  {}
       Update Interval: 0
       Value: true
     - Alpha: 0.699999988079071
       Class: rviz_default_plugins/Map
       Color Scheme: map
       Draw Behind: false
-      Enabled: true
+      Enabled: false
       Name: Map
       Topic:
         Depth: 5
@@ -100,7 +101,7 @@ Visualization Manager:
         Reliability Policy: Reliable
         Value: /map_updates
       Use Timestamp: false
-      Value: true
+      Value: false
     - Alpha: 0.5
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
@@ -169,7 +170,7 @@ Visualization Manager:
       Displays:
         - Alpha: 0.699999988079071
           Class: rviz_default_plugins/Map
-          Color Scheme: map
+          Color Scheme: costmap
           Draw Behind: false
           Enabled: true
           Name: local
@@ -189,7 +190,7 @@ Visualization Manager:
           Value: true
         - Alpha: 0.699999988079071
           Class: rviz_default_plugins/Map
-          Color Scheme: map
+          Color Scheme: costmap
           Draw Behind: false
           Enabled: false
           Name: global
@@ -239,7 +240,7 @@ Visualization Manager:
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
-    Fixed Frame: base_link
+    Fixed Frame: map
     Frame Rate: 30
   Name: root
   Tools:
@@ -279,7 +280,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 2.3584420680999756
+      Distance: 3.553034543991089
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
