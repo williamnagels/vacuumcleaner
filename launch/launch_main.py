@@ -16,7 +16,6 @@ def xacro_to_urdf(xacro_name, urdf_name):
     out.write(doc.toprettyxml(indent='  '))
 
 
-# https://stackoverflow.com/questions/1432126/how-to-get-content-of-a-small-ascii-file-in-python
 def file_get_contents(filename):
     with open(filename) as f:
         return f.read()
@@ -24,18 +23,10 @@ def file_get_contents(filename):
 
 def generate_launch_description():
     xacro_to_urdf("robot.xacro", "robot.urdf")
-
-    joint_state_publisher_node = Node(
-        package='joint_state_publisher',
-        executable='joint_state_publisher',
-        name='joint_state_publisher',
-    )
-
     nav2_launchfile = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([get_package_share_directory("vacuumcleaner"), '/launch_nav2.py']),
         launch_arguments={'use_sim_time': 'True'}.items()
     )
-
     slam_launchfile = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([get_package_share_directory("vacuumcleaner"), '/launch_slam.py']),
     )
@@ -52,7 +43,6 @@ def generate_launch_description():
                      'robot_description': model_path}],
         remappings=[('/joint_states', '/vacuumcleaner/joint_states')])
 
-
     return LaunchDescription([
         DeclareLaunchArgument('simulation',
                               default_value="false",
@@ -65,10 +55,7 @@ def generate_launch_description():
             condition=IfCondition(LaunchConfiguration('simulation')),
             launch_arguments=[("world",[get_package_share_directory("vacuumcleaner"), '/', LaunchConfiguration('world')])] #"/home/william/ros_ws/src/vacuumcleaner/models/worlds/square_2m"
         ),
-
-
         Node(executable='rviz2', package='rviz2', arguments=['-d'+rviz_path]),
         Node(package="vacuumcleaner", executable="spawn_entity", arguments=["0.0", "0.0", "0.0"]),
         slam_launchfile,
-
     ])

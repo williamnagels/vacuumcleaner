@@ -10,7 +10,7 @@ setup(
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
-        ('share/' + package_name, glob('launch/launch.py')),
+        ('share/' + package_name, glob('launch/launch_main.py')),
         ('share/' + package_name, glob('launch/launch_slam.py')),
         ('share/' + package_name, glob('launch/launch_nav2.py')),
         ('share/' + package_name, glob('config/slam.yaml')),
